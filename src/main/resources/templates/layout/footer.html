@@ -1,0 +1,17 @@
+<footer th:fragment="footer" class="bg-light text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-0 text-muted">
+            <i class="fas fa-copyright me-1"></i>
+            <span id="year"></span> 
+            <strong>Sistema CV</strong> - StylishHome
+        </p>
+        <p class="small text-muted mt-1">
+            Sistema de Gestión Comercial para Constructoras y Decoraciones
+        </p>
+    </div>
+    
+    <script>
+        // Actualizar el año automáticamente
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</footer>
