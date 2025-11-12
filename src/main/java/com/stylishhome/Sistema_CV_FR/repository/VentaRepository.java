@@ -12,66 +12,85 @@ import java.util.Optional;
 
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Integer> {
-    
+
     List<Venta> findByClienteIdCliente(Integer idCliente);
+
     List<Venta> findByEmpleadoIdEmpleado(Integer idEmpleado);
-    
+
     List<Venta> findByEstado(Venta.EstadoVenta estado);
+
     List<Venta> findByFechaBetween(LocalDate fechaInicio, LocalDate fechaFin);
+
     Optional<Venta> findByNumeroFactura(String numeroFactura);
-    
+
+    //Obtener últimas ventas para Dashboard
+    @Query("SELECT v FROM Venta v ORDER BY v.fecha DESC LIMIT :limite")
+    List<Venta> findTopNByOrderByFechaDesc(@Param("limite") int limite);
+
+    //Contar ventas de hoy para Dashboard
+    @Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha = :hoy")
+    Long countByFecha(@Param("hoy") LocalDate hoy);
+
+    //Calcular total de ventas de hoy
+    @Query("SELECT COALESCE(SUM(v.total), 0) FROM Venta v WHERE v.fecha = :hoy AND v.estado = 'COMPLETADA'")
+    Double calcularTotalVentasHoy(@Param("hoy") LocalDate hoy);
+
     @Query("SELECT v.metodoPago, COUNT(v) FROM Venta v WHERE v.estado = 'COMPLETADA' GROUP BY v.metodoPago")
     List<Object[]> countVentasPorMetodoPago();
-    
+
     @Query("SELECT v FROM Venta v LEFT JOIN FETCH v.detalles WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin")
     List<Venta> findVentasConDetallesPorFecha(@Param("fechaInicio") LocalDate fechaInicio,
-                                            @Param("fechaFin") LocalDate fechaFin);
-    
+            @Param("fechaFin") LocalDate fechaFin);
+
     @Query("SELECT COALESCE(SUM(v.total), 0) FROM Venta v WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = 'COMPLETADA'")
     Double calcularTotalVentasPeriodo(@Param("fechaInicio") LocalDate fechaInicio,
-                                    @Param("fechaFin") LocalDate fechaFin);
+            @Param("fechaFin") LocalDate fechaFin);
 
     @Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin")
-    Long countByFechaBetween(@Param("fechaInicio") LocalDate fechaInicio, 
-                           @Param("fechaFin") LocalDate fechaFin);
-    
+    Long countByFechaBetween(@Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin);
+
     @Query("SELECT COUNT(v) FROM Venta v WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = :estado")
     Long countByFechaBetweenAndEstado(@Param("fechaInicio") LocalDate fechaInicio,
-                                    @Param("fechaFin") LocalDate fechaFin,
-                                    @Param("estado") Venta.EstadoVenta estado);
-    
+            @Param("fechaFin") LocalDate fechaFin,
+            @Param("estado") Venta.EstadoVenta estado);
+
     @Query("SELECT COUNT(v) FROM Venta v WHERE v.estado = :estado")
     Long countByEstado(@Param("estado") Venta.EstadoVenta estado);
-    
-    @Query("SELECT v, c.nombre, c.apellido, u.usuario, SUM(vd.cantidad) " +
-           "FROM Venta v " +
-           "JOIN v.cliente c " +
-           "JOIN v.empleado u " +
-           "LEFT JOIN v.detalles vd " +
-           "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin " +
-           "GROUP BY v.idVenta, v.numeroFactura, v.fecha, v.total, v.estado, v.metodoPago, c.nombre, c.apellido, u.usuario")
+
+    @Query("SELECT v, c.nombre, c.apellido, u.usuario, SUM(vd.cantidad) "
+            + "FROM Venta v "
+            + "JOIN v.cliente c "
+            + "JOIN v.empleado u "
+            + "LEFT JOIN v.detalles vd "
+            + "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin "
+            + "GROUP BY v.idVenta, v.numeroFactura, v.fecha, v.total, v.estado, v.metodoPago, c.nombre, c.apellido, u.usuario")
     List<Object[]> findVentasDetalladasPorFecha(@Param("fechaInicio") LocalDate fechaInicio,
-                                              @Param("fechaFin") LocalDate fechaFin);
-    
-    @Query("SELECT v.metodoPago, COUNT(v), SUM(v.total) " +
-           "FROM Venta v " +
-           "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = 'COMPLETADA' " +
-           "GROUP BY v.metodoPago")
+            @Param("fechaFin") LocalDate fechaFin);
+
+    @Query("SELECT v.metodoPago, COUNT(v), SUM(v.total) "
+            + "FROM Venta v "
+            + "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = 'COMPLETADA' "
+            + "GROUP BY v.metodoPago")
     List<Object[]> countVentasPorMetodoPagoPeriodo(@Param("fechaInicio") LocalDate fechaInicio,
-                                                 @Param("fechaFin") LocalDate fechaFin);
-    
-    @Query("SELECT u.usuario, COUNT(v), SUM(v.total) " +
-           "FROM Venta v " +
-           "JOIN v.empleado u " +
-           "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = 'COMPLETADA' " +
-           "GROUP BY u.usuario")
+            @Param("fechaFin") LocalDate fechaFin);
+
+    @Query("SELECT u.usuario, COUNT(v), SUM(v.total) "
+            + "FROM Venta v "
+            + "JOIN v.empleado u "
+            + "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = 'COMPLETADA' "
+            + "GROUP BY u.usuario")
     List<Object[]> findVentasPorVendedorPeriodo(@Param("fechaInicio") LocalDate fechaInicio,
-                                              @Param("fechaFin") LocalDate fechaFin);
-    
-    @Query("SELECT COALESCE(SUM(vd.cantidad), 0) " +
-           "FROM Venta v " +
-           "JOIN v.detalles vd " +
-           "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = 'COMPLETADA'")
+            @Param("fechaFin") LocalDate fechaFin);
+
+    @Query("SELECT COALESCE(SUM(vd.cantidad), 0) "
+            + "FROM Venta v "
+            + "JOIN v.detalles vd "
+            + "WHERE v.fecha BETWEEN :fechaInicio AND :fechaFin AND v.estado = 'COMPLETADA'")
     Long sumProductosVendidosPeriodo(@Param("fechaInicio") LocalDate fechaInicio,
-                                   @Param("fechaFin") LocalDate fechaFin);
+            @Param("fechaFin") LocalDate fechaFin);
+
+    //Obtener total de ventas general
+    @Query("SELECT COALESCE(SUM(v.total), 0) FROM Venta v WHERE v.estado = 'COMPLETADA'")
+    Double obtenerVentasTotales();
 }

@@ -1,0 +1,618 @@
+:root {
+    --inve-spacing: 1.5rem;
+    --inve-border-radius: 8px;
+    --inve-transition: all 0.3s ease;
+    --inve-shadow-md: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --inve-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --inve-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Contenedor principal de informe de ventas */
+.informe-ventas-container {
+    min-height: calc(100vh - 40px);
+    padding: 20px 0;
+}
+
+/* Header de página de informe de ventas */
+.informe-ventas-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-secondary);
+}
+
+.informe-ventas-header h2 {
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.informe-ventas-header h2 i {
+    color: var(--color-accent);
+    font-size: 1.8rem;
+}
+
+/* Estadísticas de ventas específicas */
+.estadisticas-ventas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.estadistica-venta-card {
+    background: white;
+    border-radius: var(--inve-border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--inve-shadow-md);
+    border-left: 4px solid transparent;
+    transition: var(--inve-transition);
+    position: relative;
+    overflow: hidden;
+    animation: inveFadeInUp 0.5s ease-out;
+}
+
+.estadistica-venta-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-accent) 0%, transparent 100%);
+    opacity: 0;
+    transition: var(--inve-transition);
+}
+
+.estadistica-venta-card:hover::before {
+    opacity: 1;
+}
+
+.estadistica-venta-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--inve-shadow-lg);
+}
+
+.estadistica-venta-valor {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.estadistica-venta-etiqueta {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.estadistica-venta-descripcion {
+    font-size: 0.8rem;
+    color: #adb5bd;
+    margin: 0;
+}
+
+/* Colores específicos para cada estadística */
+.estadistica-venta-total {
+    border-left-color: var(--color-success);
+    animation-delay: 0.1s;
+}
+
+.estadistica-venta-total .estadistica-venta-valor {
+    background: linear-gradient(135deg, var(--color-success) 0%, #1e7e34 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.estadistica-venta-transacciones {
+    border-left-color: var(--color-primary);
+    animation-delay: 0.2s;
+}
+
+.estadistica-venta-transacciones .estadistica-venta-valor {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2c2c2c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.estadistica-venta-promedio {
+    border-left-color: var(--color-warning);
+    animation-delay: 0.3s;
+}
+
+.estadistica-venta-promedio .estadistica-venta-valor {
+    background: linear-gradient(135deg, var(--color-warning) 0%, #e0a800 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.estadistica-venta-maxima {
+    border-left-color: var(--color-info);
+    animation-delay: 0.4s;
+}
+
+.estadistica-venta-maxima .estadistica-venta-valor {
+    background: linear-gradient(135deg, var(--color-info) 0%, #138496 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Métodos de pago específicos */
+.metodos-pago-ventas {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.metodo-pago-venta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(203, 154, 40, 0.1);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: var(--inve-transition);
+}
+
+.metodo-pago-venta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.metodo-pago-efectivo {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(40, 167, 69, 0.15) 100%);
+    color: var(--color-success);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.metodo-pago-tarjeta {
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.15) 100%);
+    color: #007bff;
+    border: 1px solid rgba(0, 123, 255, 0.2);
+}
+
+.metodo-pago-transferencia {
+    background: linear-gradient(135deg, rgba(23, 162, 184, 0.1) 0%, rgba(23, 162, 184, 0.15) 100%);
+    color: var(--color-info);
+    border: 1px solid rgba(23, 162, 184, 0.2);
+}
+
+.metodo-pago-cheque {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.15) 100%);
+    color: var(--color-warning);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+/* Tabla específica de ventas */
+.tabla-ventas-responsive {
+    border-radius: var(--inve-border-radius);
+    overflow: hidden;
+    box-shadow: var(--inve-shadow-sm);
+    margin-bottom: 1rem;
+}
+
+.tabla-ventas {
+    margin: 0;
+    background: white;
+    width: 100%;
+}
+
+.tabla-ventas th {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2c2c2c 100%);
+    color: white;
+    border: none;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.tabla-ventas td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-color: #f8f9fa;
+    transition: var(--inve-transition);
+}
+
+.tabla-ventas-hover tbody tr {
+    transition: var(--inve-transition);
+}
+
+.tabla-ventas-hover tbody tr:hover {
+    background-color: rgba(203, 154, 40, 0.08);
+    transform: translateY(-1px);
+    box-shadow: var(--inve-shadow-sm);
+}
+
+/* Anchos específicos de columnas para tabla de ventas */
+.tabla-ventas th:nth-child(1) {
+    width: 120px;
+} /* Factura */
+.tabla-ventas th:nth-child(2) {
+    width: 100px;
+} /* Fecha */
+.tabla-ventas th:nth-child(3) {
+    width: 150px;
+} /* Cliente */
+.tabla-ventas th:nth-child(4) {
+    width: 120px;
+} /* Vendedor */
+.tabla-ventas th:nth-child(5) {
+    width: 200px;
+} /* Producto */
+.tabla-ventas th:nth-child(6) {
+    width: 80px;
+}  /* Cantidad */
+.tabla-ventas th:nth-child(7) {
+    width: 120px;
+} /* Precio */
+.tabla-ventas th:nth-child(8) {
+    width: 120px;
+} /* Total */
+.tabla-ventas th:nth-child(9) {
+    width: 130px;
+} /* Método */
+.tabla-ventas th:nth-child(10) {
+    width: 100px;
+} /* Estado */
+
+/* Gráficos específicos para ventas */
+.graficos-ventas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.grafico-venta-card {
+    background: white;
+    border-radius: var(--inve-border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--inve-shadow-md);
+    border: 1px solid rgba(203, 154, 40, 0.1);
+    transition: var(--inve-transition);
+    animation: inveFadeInUp 0.5s ease-out;
+}
+
+.grafico-venta-card:hover {
+    box-shadow: var(--inve-shadow-lg);
+    transform: translateY(-3px);
+}
+
+.grafico-venta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(203, 154, 40, 0.1);
+}
+
+.grafico-venta-header h5 {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin: 0;
+}
+
+.contenedor-grafico-ventas {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Estados específicos de venta */
+.estado-venta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--inve-transition);
+}
+
+.estado-venta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.estado-venta-completada {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(40, 167, 69, 0.25) 100%);
+    color: var(--color-success);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.estado-venta-pendiente {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0.25) 100%);
+    color: var(--color-warning);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.estado-venta-cancelada {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(220, 53, 69, 0.25) 100%);
+    color: var(--color-danger);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+/* Selector de rango de fechas específico para ventas */
+.selector-fechas-ventas {
+    background: linear-gradient(135deg, #ffffff 0%, var(--color-light) 100%);
+    border-radius: var(--inve-border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--inve-shadow-md);
+    border: 1px solid rgba(203, 154, 40, 0.1);
+    transition: var(--inve-transition);
+    margin-bottom: 2rem;
+}
+
+.selector-fechas-ventas:hover {
+    box-shadow: var(--inve-shadow-lg);
+    transform: translateY(-2px);
+}
+
+.selector-fechas-ventas h5 {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.selector-fechas-ventas h5 i {
+    color: var(--color-accent);
+}
+
+/* Botones específicos para informe de ventas */
+.btn-ventas-primary {
+    background: linear-gradient(135deg, var(--color-accent) 0%, #b8860b 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--inve-border-radius);
+    font-weight: 500;
+    transition: var(--inve-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 140px;
+}
+
+.btn-ventas-primary:hover {
+    background: linear-gradient(135deg, #b8860b 0%, var(--color-accent) 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(203, 154, 40, 0.3);
+}
+
+.btn-ventas-outline {
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+    background: transparent;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--inve-border-radius);
+    transition: var(--inve-transition);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-ventas-outline:hover {
+    background: var(--color-accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(203, 154, 40, 0.3);
+}
+
+/* Animaciones específicas para informe de ventas */
+@keyframes inveFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.estadistica-venta-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.estadistica-venta-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+.estadistica-venta-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+.estadistica-venta-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+/* Responsive Design para informe de ventas */
+@media (max-width: 992px) {
+    .informe-ventas-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .estadisticas-ventas-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+
+    .contenedor-grafico-ventas {
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .informe-ventas-container {
+        padding: 15px 0;
+    }
+
+    .estadisticas-ventas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .graficos-ventas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .estadistica-venta-card {
+        padding: 1.25rem;
+    }
+
+    .estadistica-venta-valor {
+        font-size: 2rem;
+    }
+
+    .metodos-pago-ventas {
+        justify-content: center;
+    }
+
+    .grafico-venta-card {
+        padding: 1.25rem;
+    }
+
+    .tabla-ventas {
+        font-size: 0.85rem;
+    }
+
+    .tabla-ventas th,
+    .tabla-ventas td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .contenedor-grafico-ventas {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .informe-ventas-container {
+        padding: 10px 0;
+    }
+
+    .tabla-ventas {
+        font-size: 0.75rem;
+    }
+
+    .estadistica-venta-valor {
+        font-size: 1.75rem;
+    }
+
+    .grafico-venta-header {
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+
+    .selector-fechas-ventas {
+        padding: 1.25rem;
+    }
+
+    .grafico-venta-card {
+        padding: 1rem;
+    }
+
+    .btn-ventas-primary,
+    .btn-ventas-outline {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Estados de focus para accesibilidad */
+.btn-ventas-primary:focus-visible,
+.btn-ventas-outline:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Estilos para modo de alto contraste */
+@media (prefers-contrast: high) {
+    .estadistica-venta-card {
+        border-width: 3px;
+    }
+
+    .btn-ventas-primary,
+    .btn-ventas-outline {
+        border-width: 3px;
+    }
+
+    .tabla-ventas th,
+    .tabla-ventas td {
+        border-width: 2px;
+    }
+}
+
+/* Estilos para modo reducido de movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .estadistica-venta-card,
+    .grafico-venta-card,
+    .btn-ventas-primary,
+    .btn-ventas-outline,
+    .metodo-pago-venta,
+    .tabla-ventas-hover tbody tr,
+    .estado-venta {
+        transition: none;
+    }
+
+    .estadistica-venta-card:hover,
+    .grafico-venta-card:hover,
+    .btn-ventas-primary:hover,
+    .btn-ventas-outline:hover,
+    .metodo-pago-venta:hover,
+    .tabla-ventas-hover tbody tr:hover,
+    .estado-venta:hover {
+        transform: none;
+    }
+
+    .estadistica-venta-card:hover::before {
+        opacity: 0;
+    }
+}
+
+/* Utilidades de texto específicas para ventas */
+.text-ventas-success {
+    color: var(--color-success) !important;
+    font-weight: 600;
+}
+
+.text-ventas-primary {
+    color: var(--color-primary) !important;
+    font-weight: 600;
+}
+
+.text-ventas-warning {
+    color: var(--color-warning) !important;
+    font-weight: 600;
+}
+
+.text-ventas-info {
+    color: var(--color-info) !important;
+    font-weight: 600;
+}

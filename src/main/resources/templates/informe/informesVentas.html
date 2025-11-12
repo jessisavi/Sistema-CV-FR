@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title>Informe Detallado de Ventas - Sistema CV</title>
+
+        <!-- Estilos específicos para informe de ventas -->
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleINVE.css}">
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </th:block>
+</head>
+
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0"><i class="fas fa-shopping-cart me-2"></i> Informe Detallado de Ventas</h2>
+                <div>
+                    <a th:href="@{/informes}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                    <button class="btn btn-custom" id="btnExportarVentas">
+                        <i class="fas fa-file-export me-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="date-range-picker">
+                        <h5 class="mb-3"><i class="fas fa-calendar-alt me-2"></i> Período Seleccionado</h5>
+                        <form th:action="@{/informes/ventas}" method="get" id="filtroForm">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                                    <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" 
+                                           th:value="${fechaInicio != null} ? ${#temporals.format(fechaInicio, 'yyyy-MM-dd')} : ''">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="fechaFin" class="form-label">Fecha Fin</label>
+                                    <input type="date" class="form-control" id="fechaFin" name="fechaFin"
+                                           th:value="${fechaFin != null} ? ${#temporals.format(fechaFin, 'yyyy-MM-dd')} : ''">
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end mb-2">
+                                    <button type="submit" class="btn btn-custom w-100">
+                                        <i class="fas fa-filter me-2"></i>Actualizar
+                                    </button>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end mb-2">
+                                    <a th:href="@{/informes/ventas}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-sync me-2"></i>Restablecer
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjetas de resumen -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-success">Total Ventas</h5>
+                                    <h3 class="text-success" th:text="${estadisticas?.totalIngresos != null} ? '$' + ${#numbers.formatDecimal(estadisticas.totalIngresos, 0, 'DEFAULT', 0, 'DEFAULT')} : '$0'">$0</h3>
+                                    <p class="card-text">Ingresos totales</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-primary">Transacciones</h5>
+                                    <h3 class="text-primary" th:text="${estadisticas?.totalVentas != null} ? ${estadisticas.totalVentas} : '0'">0</h3>
+                                    <p class="card-text">Ventas realizadas</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-receipt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-warning">Promedio</h5>
+                                    <h3 class="text-warning" th:text="${estadisticas?.promedioVenta != null} ? '$' + ${#numbers.formatDecimal(estadisticas.promedioVenta, 0, 'DEFAULT', 0, 'DEFAULT')} : '$0'">$0</h3>
+                                    <p class="card-text">Por transacción</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-info">Venta Máxima</h5>
+                                    <h3 class="text-info" th:text="${estadisticas?.ventaMaxima != null} ? '$' + ${#numbers.formatDecimal(estadisticas.ventaMaxima, 0, 'DEFAULT', 0, 'DEFAULT')} : '$0'">$0</h3>
+                                    <p class="card-text">Mayor transacción</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Distribución por Método de Pago</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="paymentMethodChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Tendencia de Ventas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="salesTrendChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Ventas Detalladas -->
+            <div class="card card-custom mb-4">
+                <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Detalle de Ventas</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2" id="btnImprimirTabla">
+                            <i class="fas fa-print me-1"></i>Imprimir
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="btnExportarTabla">
+                            <i class="fas fa-download me-1"></i>Exportar
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tablaVentas">
+                            <thead>
+                                <tr>
+                                    <th>N° Factura</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unit.</th>
+                                    <th>Total</th>
+                                    <th>Método Pago</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(ventas)}">
+                                    <td colspan="10" class="text-center">No hay ventas en el período seleccionado</td>
+                                </tr>
+                                <tr th:each="venta : ${ventas}">
+                                    <td th:text="${venta.numeroFactura}">FAC-001</td>
+                                    <td th:text="${venta.fecha != null} ? ${#temporals.format(venta.fecha, 'dd/MM/yyyy')} : 'N/A'">01/01/2024</td>
+                                    <td th:text="${venta.cliente}">Cliente Ejemplo</td>
+                                    <td th:text="${venta.vendedor}">Vendedor</td>
+                                    <td th:text="${venta.producto}">Producto</td>
+                                    <td th:text="${venta.cantidad}">1</td>
+                                    <td th:text="${venta.precioUnitario != null} ? '$' + ${#numbers.formatDecimal(venta.precioUnitario, 0, 'DEFAULT', 0, 'DEFAULT')} : '$0'">$0</td>
+                                    <td th:text="${venta.totalVenta != null} ? '$' + ${#numbers.formatDecimal(venta.totalVenta, 0, 'DEFAULT', 0, 'DEFAULT')} : '$0'">$0</td>
+                                    <td>
+                                        <span th:classappend="${venta.metodoPago == 'EFECTIVO'} ? 'badge bg-success' : 
+                                              ${venta.metodoPago == 'TARJETA_CREDITO'} ? 'badge bg-primary' : 
+                                              ${venta.metodoPago == 'TRANSFERENCIA'} ? 'badge bg-info' : 
+                                              'badge bg-warning'"
+                                              th:text="${venta.metodoPago}">EFECTIVO</span>
+                                    </td>
+                                    <td>
+                                        <span th:classappend="${venta.estado == 'COMPLETADA'} ? 'badge bg-success' : 
+                                              ${venta.estado == 'PENDIENTE'} ? 'badge bg-warning text-dark' : 
+                                              'badge bg-danger'"
+                                              th:text="${venta.estado}">COMPLETADA</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts específicos para informe de ventas -->
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/informesVentas.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Datos para gráficos desde el servidor
+        const totalEfectivo = /*[[${estadisticas?.totalEfectivo != null} ? ${estadisticas.totalEfectivo} : 0]]*/ 0;
+        const totalTarjeta = /*[[${estadisticas?.totalTarjeta != null} ? ${estadisticas.totalTarjeta} : 0]]*/ 0;
+        const totalTransferencia = /*[[${estadisticas?.totalTransferencia != null} ? ${estadisticas.totalTransferencia} : 0]]*/ 0;
+        const totalCheque = /*[[${estadisticas?.totalCheque != null} ? ${estadisticas.totalCheque} : 0]]*/ 0;
+
+        // URLs para exportación
+        const baseUrl = /*[[@{/}]]*/ '';
+        const fechaInicio = /*[[${fechaInicio != null} ? ${#temporals.format(fechaInicio, 'yyyy-MM-dd')} : '']]*/ '';
+        const fechaFin = /*[[${fechaFin != null} ? ${#temporals.format(fechaFin, 'yyyy-MM-dd')} : '']]*/ '';
+        /*]]>*/
+    </script>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title>Lista de Cotizaciones - Sistema CV</title>
+
+        <!-- Estilos específicos para cotizaciones -->
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleCOT.css}">
+    </th:block>
+</head>
+
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <!-- Información de debug (temporal) -->
+            <div th:if="${#lists.isEmpty(cotizaciones)}" class="alert alert-warning">
+                <strong>Info:</strong> No se encontraron cotizaciones en la base de datos.
+                <br><small>Total de cotizaciones: 0</small>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i> Gestion de Cotizaciones</h2>
+                <div>
+                    <a th:href="@{/cotizaciones/nueva}" class="btn btn-custom me-2">
+                        <i class="fas fa-plus me-2"></i>Nueva Cotizacion
+                    </a>
+                    <button class="btn btn-outline-custom" id="btnExportar">
+                        <i class="fas fa-file-export me-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Cotizaciones Hoy</h5>
+                            <h2 class="card-text" th:text="${cotizacionesHoy != null ? cotizacionesHoy : '0'}">0</h2>
+                            <p class="card-text text-success small"><i class="fas fa-arrow-up me-1"></i> En el dia de hoy</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Pendientes</h5>
+                            <h2 class="card-text" th:text="${pendientes != null ? pendientes : '0'}">0</h2>
+                            <p class="card-text text-warning small"><i class="fas fa-clock me-1"></i> Requieren atencion</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Aprobadas</h5>
+                            <h2 class="card-text" th:text="${aprobadas != null ? aprobadas : '0'}">0</h2>
+                            <p class="card-text text-success small"><i class="fas fa-check-circle me-1"></i> Listas para Pedido</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Valor Total</h5>
+                            <h2 class="card-text" th:text="${valorTotal != null ? '$' + #numbers.formatDecimal(valorTotal, 0, 'DEFAULT', 0, 'DEFAULT') : '$0'}">$0</h2>
+                            <p class="card-text text-primary small"><i class="fas fa-dollar-sign me-1"></i> Potencial de venta</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Cotizaciones -->
+            <div class="card card-custom">
+                <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Listado de Cotizaciones</h5>
+                    <div class="d-flex">
+                        <form th:action="@{/cotizaciones}" method="get" class="d-flex me-3" id="searchForm">
+                            <div class="input-group" style="width: 250px;">
+                                <input type="text" class="form-control" name="busqueda" 
+                                       placeholder="Buscar cotizaciones..." th:value="${param.busqueda}" id="inputBusqueda">
+                                <button class="btn btn-outline-secondary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <th:block th:if="${param.busqueda}">
+                                    <a th:href="@{/cotizaciones}" class="btn btn-outline-danger">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </th:block>
+                            </div>
+                        </form>
+                        <form th:action="@{/cotizaciones}" method="get" class="d-flex" id="filterForm">
+                            <select class="form-select" name="filtroEstado" style="width: 150px;" id="selectEstado">
+                                <option value="Todas" th:selected="${param.filtroEstado == 'Todas' || !param.filtroEstado}">Todas</option>
+                                <option value="PENDIENTE" th:selected="${param.filtroEstado == 'PENDIENTE'}">Pendientes</option>
+                                <option value="APROBADA" th:selected="${param.filtroEstado == 'APROBADA'}">Aprobadas</option>
+                                <option value="RECHAZADA" th:selected="${param.filtroEstado == 'RECHAZADA'}">Rechazadas</option>
+                                <option value="VENCIDA" th:selected="${param.filtroEstado == 'VENCIDA'}">Vencidas</option>
+                            </select>
+                            <th:block th:if="${param.filtroEstado && param.filtroEstado != 'Todas'}">
+                                <a th:href="@{/cotizaciones}" class="btn btn-outline-danger ms-2">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </th:block>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tablaCotizaciones">
+                            <thead>
+                                <tr>
+                                    <th>N° Cotización</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha</th>
+                                    <th>Válido hasta</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(cotizaciones)}">
+                                    <td colspan="7" class="text-center text-muted py-5">
+                                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                                        <h5>No se encontraron cotizaciones</h5>
+                                        <p class="mb-0">No hay cotizaciones registradas en el sistema</p>
+                                        <a th:href="@{/cotizaciones/nueva}" class="btn btn-custom mt-3">
+                                            <i class="fas fa-plus me-2"></i>Crear primera cotización
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:each="cotizacion : ${cotizaciones}">
+                                    <td>
+                                        <strong th:text="${cotizacion.codigo}">COT-2025-00125</strong>
+                                    </td>
+                                    <td>
+                                        <span th:if="${cotizacion.cliente}" th:text="${cotizacion.cliente.nombreCompleto}">
+                                            Constructora Andina S.A.
+                                        </span>
+                                        <span th:unless="${cotizacion.cliente}" class="text-muted">
+                                            Cliente no disponible
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${cotizacion.fecha}" th:text="${#dates.format(cotizacion.fecha, 'dd/MM/yyyy')}">
+                                            15/05/2025
+                                        </span>
+                                        <span th:unless="${cotizacion.fecha}" class="text-muted">
+                                            N/A
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${cotizacion.validoHasta}" th:text="${#dates.format(cotizacion.validoHasta, 'dd/MM/yyyy')}">
+                                            30/05/2025
+                                        </span>
+                                        <span th:unless="${cotizacion.validoHasta}" class="text-muted">
+                                            N/A
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong th:text="'$' + ${#numbers.formatDecimal(cotizacion.total, 0, 'DEFAULT', 0, 'DEFAULT')}">
+                                            $38.450.000
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <span th:classappend="${cotizacion.estado == 'APROBADA'} ? 'badge bg-success' : 
+                                              ${cotizacion.estado == 'PENDIENTE'} ? 'badge bg-warning' : 
+                                              ${cotizacion.estado == 'RECHAZADA'} ? 'badge bg-danger' : 
+                                              ${cotizacion.estado == 'VENCIDA'} ? 'badge bg-secondary' : 
+                                              'badge bg-secondary'"
+                                              th:text="${cotizacion.estado}">Aprobada</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a th:href="@{/cotizaciones/{id}(id=${cotizacion.id})}" 
+                                               class="btn btn-outline-primary" title="Ver detalles">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a th:href="@{/cotizaciones/editar/{id}(id=${cotizacion.id})}" 
+                                               class="btn btn-outline-secondary" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <th:block th:if="${cotizacion.estado == 'APROBADA'}">
+                                                <button class="btn btn-outline-success" title="Generar pedido" th:attr="data-cotizacion-id=${cotizacion.id}">
+                                                    <i class="fas fa-file-invoice"></i>
+                                                </button>
+                                            </th:block>
+                                            <th:block th:if="${cotizacion.estado != 'APROBADA' and cotizacion.estado != 'RECHAZADA'}">
+                                                <form th:action="@{/cotizaciones/aprobar/{id}(id=${cotizacion.id})}" 
+                                                      method="post" style="display: inline;">
+                                                    <button type="submit" class="btn btn-outline-success btn-aprobar" 
+                                                            th:attr="data-cotizacion-codigo=${cotizacion.codigo}"
+                                                            title="Aprobar">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            </th:block>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts específicos para cotizaciones -->
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/cotizacionLista.js}"></script>
+</th:block>
+</body>
+</html>

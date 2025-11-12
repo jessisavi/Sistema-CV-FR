@@ -11,7 +11,6 @@ import java.util.Optional;
 
 /**
  * Servicio para la gestión de productos
- * Contiene la lógica de negocio para operaciones relacionadas con productos
  */
 @Service
 @Transactional
@@ -53,7 +52,7 @@ public class ProductoService {
     public Producto guardarProducto(Producto producto) {
         // Validaciones antes de guardar
         validarProducto(producto);
-        
+
         // Verificar duplicados de código para nuevos productos
         if (producto.getIdProducto() == null) {
             if (productoRepository.existsByCodigo(producto.getCodigo())) {
@@ -62,9 +61,9 @@ public class ProductoService {
         } else {
             // Para actualizaciones, verificar que el código no esté siendo usado por otro producto
             Optional<Producto> productoExistente = productoRepository.findById(producto.getIdProducto());
-            if (productoExistente.isPresent() && 
-                !productoExistente.get().getCodigo().equals(producto.getCodigo()) &&
-                productoRepository.existsByCodigo(producto.getCodigo())) {
+            if (productoExistente.isPresent()
+                    && !productoExistente.get().getCodigo().equals(producto.getCodigo())
+                    && productoRepository.existsByCodigo(producto.getCodigo())) {
                 throw new RuntimeException("Ya existe otro producto con el código: " + producto.getCodigo());
             }
         }
@@ -93,7 +92,6 @@ public class ProductoService {
      * Busca productos por categoría
      */
     public List<Producto> obtenerProductosPorCategoria(Integer categoriaId) {
-        // ✅ CORREGIDO: Cambio de findByCategoriaId a findByCategoriaIdCategoria
         return productoRepository.findByCategoriaIdCategoria(categoriaId);
     }
 
@@ -101,7 +99,7 @@ public class ProductoService {
      * Obtiene productos con stock bajo (menos de 10 unidades)
      */
     public List<Producto> obtenerProductosStockBajo() {
-        return productoRepository.findByStockLessThan(10);
+        return productoRepository.findProductosStockBajo();
     }
 
     /**
@@ -117,12 +115,12 @@ public class ProductoService {
     public void actualizarStock(Integer productoId, Integer cantidad) {
         Producto producto = productoRepository.findById(productoId)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-        
+
         int nuevoStock = producto.getStock() + cantidad;
         if (nuevoStock < 0) {
             throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
         }
-        
+
         producto.setStock(nuevoStock);
         productoRepository.save(producto);
     }
@@ -146,7 +144,7 @@ public class ProductoService {
     /**
      * Obtiene productos por rango de precios
      */
-    public List<Producto> obtenerProductosPorRangoPrecio(Double precioMin, Double precioMax) {
+    public List<Producto> obtenerProductosPorRangoPrecio(java.math.BigDecimal precioMin, java.math.BigDecimal precioMax) {
         return productoRepository.findByPrecioBetween(precioMin, precioMax);
     }
 
@@ -158,6 +156,13 @@ public class ProductoService {
     }
 
     /**
+     * Obtiene el número de productos activos (con stock > 0)
+     */
+    public Long contarProductosActivos() {
+        return productoRepository.countProductosActivos();
+    }
+
+    /**
      * Obtiene el número de productos con stock bajo
      */
     public Long contarProductosStockBajo() {
@@ -165,16 +170,38 @@ public class ProductoService {
     }
 
     /**
+     * Obtiene el número de productos con stock crítico
+     */
+    public Long contarProductosStockCritico() {
+        return productoRepository.countByStockLessThan(5);
+    }
+
+    /**
+     * Obtiene productos más vendidos
+     */
+    public List<Object[]> obtenerTop5ProductosMasVendidos() {
+        return productoRepository.findTop5ProductosMasVendidos();
+    }
+
+    /**
      * Obtiene estadísticas de productos
      */
     public java.util.Map<String, Object> obtenerEstadisticasProductos() {
         java.util.Map<String, Object> estadisticas = new java.util.HashMap<>();
-        
+
         estadisticas.put("totalProductos", contarTotalProductos());
+        estadisticas.put("productosActivos", contarProductosActivos());
         estadisticas.put("productosStockBajo", contarProductosStockBajo());
-        estadisticas.put("productosStockCritico", (long) obtenerProductosStockCritico().size());
-        estadisticas.put("categoriasActivas", categoriaService.obtenerCategoriasConProductosEnStock().size());
-        
+        estadisticas.put("productosStockCritico", contarProductosStockCritico());
+        estadisticas.put("productosSinStock", productoRepository.countProductosSinStock());
+
+        // Obtener categorías con productos en stock
+        try {
+            estadisticas.put("categoriasActivas", categoriaService.obtenerCategoriasConProductosEnStock().size());
+        } catch (Exception e) {
+            estadisticas.put("categoriasActivas", 0);
+        }
+
         return estadisticas;
     }
 
@@ -185,19 +212,19 @@ public class ProductoService {
         if (producto.getCodigo() == null || producto.getCodigo().trim().isEmpty()) {
             throw new RuntimeException("El código del producto es obligatorio");
         }
-        
+
         if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
             throw new RuntimeException("El nombre del producto es obligatorio");
         }
-        
-        if (producto.getPrecio() == null || producto.getPrecio().doubleValue() <= 0) {
+
+        if (producto.getPrecio() == null || producto.getPrecio().compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("El precio del producto debe ser mayor a cero");
         }
-        
+
         if (producto.getStock() == null || producto.getStock() < 0) {
             throw new RuntimeException("El stock no puede ser negativo");
         }
-        
+
         if (producto.getCategoria() == null || producto.getCategoria().getIdCategoria() == null) {
             throw new RuntimeException("La categoría del producto es obligatoria");
         }

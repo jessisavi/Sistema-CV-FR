@@ -13,28 +13,31 @@ import java.util.Optional;
  */
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
-    
+
     /**
      * Busca un usuario por su nombre de usuario
+     *
      * @param usuario Nombre de usuario
      * @return Optional con el usuario encontrado
      */
     Optional<Usuario> findByUsuario(String usuario);
-    
+
     /**
      * Verifica si existe un usuario con el nombre de usuario especificado
+     *
      * @param usuario Nombre de usuario
      * @return true si existe, false en caso contrario
      */
     boolean existsByUsuario(String usuario);
-    
+
     /**
      * Autentica un usuario por nombre de usuario y contraseña
+     *
      * @param usuario Nombre de usuario
      * @param contraseña Contraseña
      * @return Optional con el usuario autenticado
      */
-    @Query("SELECT u FROM Usuario u WHERE u.usuario = :usuario AND u.contraseña = :contraseña AND u.activo = true")
-    Optional<Usuario> findByUsuarioAndContraseña(@Param("usuario") String usuario, 
-                                               @Param("contraseña") String contraseña);
+    @Query("SELECT u FROM Usuario u WHERE u.usuario = :usuario AND u.contraseña = :contraseña")
+    Optional<Usuario> findByUsuarioAndContraseña(@Param("usuario") String usuario,
+            @Param("contraseña") String contraseña);
 }

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title th:text="${modo == 'crear' ? 'Nueva Venta' : 'Editar Venta'} + ' | Sistema Comercial'">Venta | Sistema Comercial</title>
+
+        <!-- Estilos específicos para el formulario de ventas -->
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleVF.css}">
+    </th:block>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <!-- Mensajes flash -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="fas fa-shopping-cart me-2"></i> 
+                    <span th:text="${modo == 'crear' ? 'Registrar Nueva Venta' : 'Editar Venta'}">Gestión de Ventas</span>
+                </h2>
+                <a th:href="@{/ventas}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a Ventas
+                </a>
+            </div>
+
+            <div class="card card-custom">
+                <div class="card-body">
+                    <form method="post" 
+                          th:action="${modo == 'crear' ? @{/ventas/guardar} : @{/ventas/actualizar/{id}(id=${venta.idVenta})}}" 
+                          id="ventaForm">
+                        <input type="hidden" name="idVenta" th:value="${venta?.idVenta}">
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="cliente" class="form-label">Cliente <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="cliente" name="cliente.idCliente" required>
+                                        <option value="">Seleccionar cliente...</option>
+                                        <option th:each="cliente : ${clientes}"
+                                                th:value="${cliente.idCliente}"
+                                                th:text="${cliente.nombre + ' ' + cliente.apellido}"
+                                                th:selected="${venta?.cliente?.idCliente == cliente.idCliente}">
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fecha" class="form-label">Fecha de Venta <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="fecha" name="fecha" 
+                                           th:value="${venta?.fecha != null ? #temporals.format(venta.fecha, 'yyyy-MM-dd') : #temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" 
+                                           required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="metodoPago" class="form-label">Método de Pago <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="metodoPago" name="metodoPago" required>
+                                        <option value="EFECTIVO" 
+                                                th:selected="${venta?.metodoPago?.name() == 'EFECTIVO'}">Efectivo</option>
+                                        <option value="TARJETA_CREDITO" 
+                                                th:selected="${venta?.metodoPago?.name() == 'TARJETA_CREDITO'}">Tarjeta de Crédito</option>
+                                        <option value="TRANSFERENCIA" 
+                                                th:selected="${venta?.metodoPago?.name() == 'TRANSFERENCIA'}">Transferencia Bancaria</option>
+                                        <option value="CHEQUE" 
+                                                th:selected="${venta?.metodoPago?.name() == 'CHEQUE'}">Cheque</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">N° Factura</label>
+                                    <input type="text" class="form-control" 
+                                           th:value="${venta?.numeroFactura != null ? venta.numeroFactura : 'Por generar'}" 
+                                           readonly>
+                                    <small class="text-muted">Generado automáticamente</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Vendedor</label>
+                                    <input type="text" class="form-control" 
+                                           th:value="${session.usuario?.nombre + ' ' + session.usuario?.apellido}" 
+                                           readonly>
+                                    <small class="text-muted">Usuario en sesión</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="estado" class="form-label">Estado <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="estado" name="estado" required>
+                                        <option value="PENDIENTE" 
+                                                th:selected="${venta?.estado?.name() == 'PENDIENTE' || venta?.estado == null}">Pendiente</option>
+                                        <option value="COMPLETADA" 
+                                                th:selected="${venta?.estado?.name() == 'COMPLETADA'}">Completada</option>
+                                        <option value="CANCELADA" 
+                                                th:selected="${venta?.estado?.name() == 'CANCELADA'}">Cancelada</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-3">Productos <span class="text-danger">*</span></h5>
+                        <div class="table-responsive mb-3">
+                            <table class="table" id="productosTable">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="40%">Producto</th>
+                                        <th width="15%">Cantidad</th>
+                                        <th width="20%">Precio Unit.</th>
+                                        <th width="20%">Total</th>
+                                        <th width="5%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productosBody">
+                                    <!-- Filas de productos existentes -->
+                                    <tr th:each="detalle, stat : ${venta?.detalles}" th:if="${venta?.detalles != null}">
+                                        <td th:text="${stat.index + 1}">1</td>
+                                        <td>
+                                            <select class="form-select producto-select" name="detalles[__${stat.index}__].producto.idProducto" required>
+                                                <option value="">Seleccionar producto...</option>
+                                                <option th:each="producto : ${productos}"
+                                                        th:value="${producto.idProducto}"
+                                                        th:data-precio="${producto.precio}"
+                                                        th:text="${producto.nombre} + ' - $' + ${#numbers.formatDecimal(producto.precio, 0, 'COMMA', 2, 'POINT')}"
+                                                        th:selected="${detalle.producto.idProducto == producto.idProducto}">
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control cantidad" 
+                                                   name="detalles[__${stat.index}__].cantidad" 
+                                                   th:value="${detalle.cantidad}" min="1" required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control precio" 
+                                                   name="detalles[__${stat.index}__].precioUnitario" 
+                                                   th:value="${#numbers.formatDecimal(detalle.precioUnitario, 0, 'COMMA', 2, 'POINT')}" 
+                                                   readonly>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control total" 
+                                                   name="detalles[__${stat.index}__].total" 
+                                                   th:value="${#numbers.formatDecimal(detalle.total, 0, 'COMMA', 2, 'POINT')}" 
+                                                   readonly>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger eliminar-fila" 
+                                                    th:if="${stat.index > 0}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Fila por defecto para nueva venta -->
+                                    <tr th:if="${venta?.detalles == null || venta.detalles.isEmpty()}">
+                                        <td>1</td>
+                                        <td>
+                                            <select class="form-select producto-select" name="detalles[0].producto.idProducto" required>
+                                                <option value="">Seleccionar producto...</option>
+                                                <option th:each="producto : ${productos}"
+                                                        th:value="${producto.idProducto}"
+                                                        th:data-precio="${producto.precio}"
+                                                        th:text="${producto.nombre} + ' - $' + ${#numbers.formatDecimal(producto.precio, 0, 'COMMA', 2, 'POINT')}">
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control cantidad" name="detalles[0].cantidad" value="1" min="1" required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control precio" name="detalles[0].precioUnitario" value="" placeholder="$0" readonly>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control total" name="detalles[0].total" value="" placeholder="$0" readonly>
+                                        </td>
+                                        <td>
+                                            <!-- No mostrar botón eliminar para la primera fila -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="agregarProducto">
+                                <i class="fas fa-plus me-2"></i>Agregar Producto
+                            </button>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="notas" class="form-label">Notas</label>
+                                    <textarea class="form-control" id="notas" name="notas" rows="3" 
+                                              placeholder="Observaciones adicionales..."
+                                              th:text="${venta?.notas}"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Subtotal:</span>
+                                            <span id="subtotalResumen">$0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Descuento:</span>
+                                            <span id="descuentoResumen">$0</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>IVA (19%):</span>
+                                            <span id="ivaResumen">$0</span>
+                                        </div>
+                                        <hr>
+                                        <div class="d-flex justify-content-between fw-bold fs-5">
+                                            <span>Total:</span>
+                                            <span id="totalResumen">$0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <a th:href="@{/ventas}" class="btn btn-secondary me-2">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                <span th:text="${modo == 'crear' ? 'Guardar Venta' : 'Actualizar Venta'}">Guardar</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts específicos para el formulario de ventas -->
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/ventaFormulario.js}"></script>
+</th:block>
+</body>
+</html>

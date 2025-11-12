@@ -43,29 +43,29 @@ public class InformeService {
      */
     public Map<String, Object> generarInformeResumenGeneral(LocalDate fechaInicio, LocalDate fechaFin, Integer empleadoId) {
         Map<String, Object> informe = new HashMap<>();
-        
+
         // Estadísticas de ventas
         Double totalVentas = ventaRepository.calcularTotalVentasPeriodo(fechaInicio, fechaFin);
-        Long ventasCompletadas = ventaRepository.countByFechaBetweenAndEstado(fechaInicio, fechaFin, 
-            com.stylishhome.Sistema_CV_FR.model.Venta.EstadoVenta.COMPLETADA);
-        
+        Long ventasCompletadas = ventaRepository.countByFechaBetweenAndEstado(fechaInicio, fechaFin,
+                com.stylishhome.Sistema_CV_FR.model.Venta.EstadoVenta.COMPLETADA);
+
         // Estadísticas de cotizaciones
         Long totalCotizaciones = cotizacionRepository.countByFechaBetween(fechaInicio, fechaFin);
-        Long cotizacionesAprobadas = cotizacionRepository.countByFechaBetweenAndEstado(fechaInicio, fechaFin, 
-            com.stylishhome.Sistema_CV_FR.model.Cotizacion.EstadoCotizacion.APROBADA);
-        
+        Long cotizacionesAprobadas = cotizacionRepository.countByFechaBetweenAndEstado(fechaInicio, fechaFin,
+                com.stylishhome.Sistema_CV_FR.model.Cotizacion.EstadoCotizacion.APROBADA);
+
         // Estadísticas de clientes
         Long nuevosClientes = clienteRepository.countByFechaRegistroBetween(fechaInicio, fechaFin);
-        
+
         informe.put("fechaInicio", fechaInicio);
         informe.put("fechaFin", fechaFin);
         informe.put("totalVentas", totalVentas != null ? totalVentas : 0.0);
-        informe.put("ventasCompletadas", ventasCompletadas);
-        informe.put("totalCotizaciones", totalCotizaciones);
-        informe.put("cotizacionesAprobadas", cotizacionesAprobadas);
-        informe.put("nuevosClientes", nuevosClientes);
+        informe.put("ventasCompletadas", ventasCompletadas != null ? ventasCompletadas : 0L);
+        informe.put("totalCotizaciones", totalCotizaciones != null ? totalCotizaciones : 0L);
+        informe.put("cotizacionesAprobadas", cotizacionesAprobadas != null ? cotizacionesAprobadas : 0L);
+        informe.put("nuevosClientes", nuevosClientes != null ? nuevosClientes : 0L);
         informe.put("productosVendidos", contarProductosVendidos(fechaInicio, fechaFin));
-        
+
         return informe;
     }
 
@@ -74,18 +74,20 @@ public class InformeService {
      */
     public Map<String, Object> generarInformeVentas(LocalDate fechaInicio, LocalDate fechaFin, Integer empleadoId) {
         Map<String, Object> informe = new HashMap<>();
-        
+
         List<Object[]> ventasDetalladas = ventaRepository.findVentasDetalladasPorFecha(fechaInicio, fechaFin);
         List<Object[]> ventasPorMetodoPago = ventaRepository.countVentasPorMetodoPagoPeriodo(fechaInicio, fechaFin);
         List<Object[]> ventasPorVendedor = ventaRepository.findVentasPorVendedorPeriodo(fechaInicio, fechaFin);
-        
+
+        Double totalPeriodo = ventaRepository.calcularTotalVentasPeriodo(fechaInicio, fechaFin);
+
         informe.put("fechaInicio", fechaInicio);
         informe.put("fechaFin", fechaFin);
-        informe.put("ventasDetalladas", ventasDetalladas);
-        informe.put("ventasPorMetodoPago", ventasPorMetodoPago);
-        informe.put("ventasPorVendedor", ventasPorVendedor);
-        informe.put("totalPeriodo", ventaRepository.calcularTotalVentasPeriodo(fechaInicio, fechaFin));
-        
+        informe.put("ventasDetalladas", ventasDetalladas != null ? ventasDetalladas : List.of());
+        informe.put("ventasPorMetodoPago", ventasPorMetodoPago != null ? ventasPorMetodoPago : List.of());
+        informe.put("ventasPorVendedor", ventasPorVendedor != null ? ventasPorVendedor : List.of());
+        informe.put("totalPeriodo", totalPeriodo != null ? totalPeriodo : 0.0);
+
         return informe;
     }
 
@@ -94,19 +96,21 @@ public class InformeService {
      */
     public Map<String, Object> generarInformeCotizaciones(LocalDate fechaInicio, LocalDate fechaFin, Integer empleadoId) {
         Map<String, Object> informe = new HashMap<>();
-        
+
         List<Object[]> cotizacionesDetalladas = cotizacionRepository.findCotizacionesDetalladasPorFecha(fechaInicio, fechaFin);
         List<Object[]> cotizacionesPorEstado = cotizacionRepository.countCotizacionesPorEstadoPeriodo(fechaInicio, fechaFin);
         List<Object[]> cotizacionesPorVendedor = cotizacionRepository.findCotizacionesPorVendedorPeriodo(fechaInicio, fechaFin);
-        
+
+        Long totalCotizaciones = cotizacionRepository.countByFechaBetween(fechaInicio, fechaFin);
+
         informe.put("fechaInicio", fechaInicio);
         informe.put("fechaFin", fechaFin);
-        informe.put("cotizacionesDetalladas", cotizacionesDetalladas);
-        informe.put("cotizacionesPorEstado", cotizacionesPorEstado);
-        informe.put("cotizacionesPorVendedor", cotizacionesPorVendedor);
-        informe.put("totalCotizaciones", cotizacionRepository.countByFechaBetween(fechaInicio, fechaFin));
+        informe.put("cotizacionesDetalladas", cotizacionesDetalladas != null ? cotizacionesDetalladas : List.of());
+        informe.put("cotizacionesPorEstado", cotizacionesPorEstado != null ? cotizacionesPorEstado : List.of());
+        informe.put("cotizacionesPorVendedor", cotizacionesPorVendedor != null ? cotizacionesPorVendedor : List.of());
+        informe.put("totalCotizaciones", totalCotizaciones != null ? totalCotizaciones : 0L);
         informe.put("tasaConversion", calcularTasaConversionCotizaciones(fechaInicio, fechaFin));
-        
+
         return informe;
     }
 
@@ -115,32 +119,39 @@ public class InformeService {
      */
     public Map<String, Object> generarInformeProductosMasVendidos(LocalDate fechaInicio, LocalDate fechaFin) {
         Map<String, Object> informe = new HashMap<>();
-        
+
         List<Object[]> productosMasVendidos = productoRepository.findProductosMasVendidosPeriodo(fechaInicio, fechaFin);
         List<Object[]> categoriasMasVendidas = productoRepository.findCategoriasMasVendidasPeriodo(fechaInicio, fechaFin);
-        
+
         informe.put("fechaInicio", fechaInicio);
         informe.put("fechaFin", fechaFin);
-        informe.put("productosMasVendidos", productosMasVendidos);
-        informe.put("categoriasMasVendidas", categoriasMasVendidas);
-        
+        informe.put("productosMasVendidos", productosMasVendidos != null ? productosMasVendidos : List.of());
+        informe.put("categoriasMasVendidas", categoriasMasVendidas != null ? categoriasMasVendidas : List.of());
+
         return informe;
     }
 
     /**
      * Registra la generación de un informe en el log
      */
-    public void registrarGeneracionInforme(String tipoInforme, LocalDate fechaInicio, LocalDate fechaFin, 
-                                         Integer empleadoId, String parametros) {
-        InformeLog log = new InformeLog();
-        log.setTipoInforme(tipoInforme);
-        log.setFechaInicio(fechaInicio);
-        log.setFechaFin(fechaFin);
-        log.setEmpleado(usuarioService.obtenerUsuarioPorId(empleadoId)
-                .orElseThrow(() -> new RuntimeException("Empleado no encontrado")));
-        log.setParametros(parametros);
-        
-        informeLogRepository.save(log);
+    public void registrarGeneracionInforme(String tipoInforme, LocalDate fechaInicio, LocalDate fechaFin,
+            Integer empleadoId, String parametros) {
+        try {
+            InformeLog log = new InformeLog();
+            log.setTipoInforme(tipoInforme);
+            log.setFechaInicio(fechaInicio);
+            log.setFechaFin(fechaFin);
+
+            // Usar el servicio de usuario para obtener el empleado
+            usuarioService.obtenerUsuarioPorId(empleadoId).ifPresent(log::setEmpleado);
+
+            log.setParametros(parametros);
+
+            informeLogRepository.save(log);
+        } catch (Exception e) {
+            // Log del error pero no interrumpir el flujo principal
+            System.err.println("Error registrando log de informe: " + e.getMessage());
+        }
     }
 
     /**
@@ -176,20 +187,20 @@ public class InformeService {
      */
     public Map<String, Object> obtenerEstadisticasInformes() {
         Map<String, Object> estadisticas = new HashMap<>();
-        
+
         List<Object[]> tiposMasUtilizados = informeLogRepository.findTiposInformeMasUtilizados();
         List<Object[]> estadisticasPorEmpleado = informeLogRepository.findEstadisticasPorEmpleado();
-        
-        estadisticas.put("tiposMasUtilizados", tiposMasUtilizados);
-        estadisticas.put("estadisticasPorEmpleado", estadisticasPorEmpleado);
+
+        estadisticas.put("tiposMasUtilizados", tiposMasUtilizados != null ? tiposMasUtilizados : List.of());
+        estadisticas.put("estadisticasPorEmpleado", estadisticasPorEmpleado != null ? estadisticasPorEmpleado : List.of());
         estadisticas.put("totalInformesGenerados", informeLogRepository.count());
-        
+
         // Conteo por tipo de informe usando las constantes de InformeLog
         estadisticas.put("resumenGeneralCount", informeLogRepository.countByTipoInforme(InformeLog.Tipos.RESUMEN_GENERAL));
         estadisticas.put("ventasCount", informeLogRepository.countByTipoInforme(InformeLog.Tipos.INFORME_VENTAS));
         estadisticas.put("cotizacionesCount", informeLogRepository.countByTipoInforme(InformeLog.Tipos.INFORME_COTIZACIONES));
         estadisticas.put("pedidosCount", informeLogRepository.countByTipoInforme(InformeLog.Tipos.INFORME_PEDIDOS));
-        
+
         return estadisticas;
     }
 
@@ -205,14 +216,14 @@ public class InformeService {
      */
     private Double calcularTasaConversionCotizaciones(LocalDate fechaInicio, LocalDate fechaFin) {
         Long totalCotizaciones = cotizacionRepository.countByFechaBetween(fechaInicio, fechaFin);
-        Long cotizacionesAprobadas = cotizacionRepository.countByFechaBetweenAndEstado(fechaInicio, fechaFin, 
-            com.stylishhome.Sistema_CV_FR.model.Cotizacion.EstadoCotizacion.APROBADA);
-        
-        if (totalCotizaciones == 0) {
+        Long cotizacionesAprobadas = cotizacionRepository.countByFechaBetweenAndEstado(fechaInicio, fechaFin,
+                com.stylishhome.Sistema_CV_FR.model.Cotizacion.EstadoCotizacion.APROBADA);
+
+        if (totalCotizaciones == null || totalCotizaciones == 0) {
             return 0.0;
         }
-        
-        return (cotizacionesAprobadas.doubleValue() / totalCotizaciones.doubleValue()) * 100;
+
+        return (cotizacionesAprobadas != null ? cotizacionesAprobadas.doubleValue() : 0.0) / totalCotizaciones.doubleValue() * 100;
     }
 
     /**
@@ -228,11 +239,11 @@ public class InformeService {
      */
     public Map<String, Object> generarInformePersonalizado(String tipoInforme, Map<String, Object> parametros) {
         Map<String, Object> informe = new HashMap<>();
-        
+
         LocalDate fechaInicio = (LocalDate) parametros.get("fechaInicio");
         LocalDate fechaFin = (LocalDate) parametros.get("fechaFin");
         Integer empleadoId = (Integer) parametros.get("empleadoId");
-        
+
         // Usar constantes de InformeLog en lugar de strings literales
         switch (tipoInforme) {
             case InformeLog.Tipos.RESUMEN_GENERAL:
@@ -250,10 +261,12 @@ public class InformeService {
             default:
                 throw new RuntimeException("Tipo de informe no válido: " + tipoInforme);
         }
-        
+
         // Registrar la generación del informe
-        registrarGeneracionInforme(tipoInforme, fechaInicio, fechaFin, empleadoId, parametros.toString());
-        
+        if (empleadoId != null) {
+            registrarGeneracionInforme(tipoInforme, fechaInicio, fechaFin, empleadoId, parametros.toString());
+        }
+
         return informe;
     }
 

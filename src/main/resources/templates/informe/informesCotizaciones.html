@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title>Informe de Cotizaciones | Sistema Comercial</title>
+
+        <!-- Estilos específicos para informes -->
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleINCO.css}">
+    </th:block>
+</head>
+
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <!-- Mensajes -->
+            <div th:if="${mensaje}" class="alert alert-dismissible fade show" 
+                 th:classappend="${tipoMensaje == 'success'} ? 'alert-success' : 'alert-danger'" 
+                 role="alert">
+                <span th:text="${mensaje}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i> Informe Detallado de Cotizaciones</h2>
+                <div>
+                    <a th:href="@{/informes}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                    <button class="btn btn-custom" onclick="exportarCotizaciones()">
+                        <i class="fas fa-file-export me-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="date-range-picker">
+                        <h5 class="mb-3"><i class="fas fa-calendar-alt me-2"></i> Período Seleccionado</h5>
+                        <form method="get" th:action="@{/informes/cotizaciones}">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                                    <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" 
+                                           th:value="${fechaInicio}">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="fechaFin" class="form-label">Fecha Fin</label>
+                                    <input type="date" class="form-control" id="fechaFin" name="fechaFin"
+                                           th:value="${fechaFin}">
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end mb-2">
+                                    <button type="submit" class="btn btn-custom w-100">
+                                        <i class="fas fa-filter me-2"></i>Actualizar
+                                    </button>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end mb-2">
+                                    <a th:href="@{/informes/cotizaciones}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-sync me-2"></i>Restablecer
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjetas de resumen -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-primary">Total Cotizaciones</h5>
+                                    <h3 class="text-primary" th:text="${estadisticas.totalCotizaciones}">0</h3>
+                                    <p class="card-text">Cotizaciones generadas</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-success">Valor Total</h5>
+                                    <h3 class="text-success">$<span th:text="${#numbers.formatDecimal(estadisticas.totalValor, 0, 'DEFAULT', 0, 'DEFAULT')}">0</span></h3>
+                                    <p class="card-text">Valor cotizado</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-warning">Tasa Aprobación</h5>
+                                    <h3 class="text-warning" th:text="${estadisticas.tasaAprobacion} + '%'">0%</h3>
+                                    <p class="card-text">Cotizaciones aprobadas</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-info">Promedio</h5>
+                                    <h3 class="text-info">$<span th:text="${#numbers.formatDecimal(estadisticas.promedioCotizacion, 0, 'DEFAULT', 0, 'DEFAULT')}">0</span></h3>
+                                    <p class="card-text">Por cotización</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Estado de Cotizaciones</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="quotesStatusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Distribución por Vendedor</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="sellerDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Cotizaciones Detalladas -->
+            <div class="card card-custom mb-4">
+                <div class="card-header card-header-custom">
+                    <h5 class="mb-0">Detalle de Cotizaciones</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2" onclick="imprimirTabla()">
+                            <i class="fas fa-print me-1"></i>Imprimir
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="exportarTabla()">
+                            <i class="fas fa-download me-1"></i>Exportar
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tablaCotizaciones">
+                            <thead>
+                                <tr>
+                                    <th>N° Cotización</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unit.</th>
+                                    <th>Total</th>
+                                    <th>Vence</th>
+                                    <th>Días Rest.</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(cotizaciones)}">
+                                    <td colspan="11" class="text-center">No hay cotizaciones en el período seleccionado</td>
+                                </tr>
+                                <tr th:each="cotizacion : ${cotizaciones}">
+                                    <td th:text="${cotizacion.numeroCotizacion}">N/A</td>
+                                    <td th:text="${#dates.format(cotizacion.fecha, 'dd/MM/yyyy')}">N/A</td>
+                                    <td th:text="${cotizacion.cliente}">N/A</td>
+                                    <td th:text="${cotizacion.vendedor}">N/A</td>
+                                    <td th:text="${cotizacion.producto}">N/A</td>
+                                    <td th:text="${cotizacion.cantidad}">0</td>
+                                    <td>$<span th:text="${#numbers.formatDecimal(cotizacion.precioUnitario, 0, 'DEFAULT', 0, 'DEFAULT')}">0</span></td>
+                                    <td>$<span th:text="${#numbers.formatDecimal(cotizacion.total, 0, 'DEFAULT', 0, 'DEFAULT')}">0</span></td>
+                                    <td th:text="${#dates.format(cotizacion.fechaVencimiento, 'dd/MM/yyyy')}">N/A</td>
+                                    <td>
+                                        <span th:classappend="${cotizacion.diasParaVencer < 0} ? 'badge bg-danger' : 
+                                              ${cotizacion.diasParaVencer <= 3} ? 'badge bg-warning text-dark' : 
+                                              'badge bg-success'"
+                                              th:text="${cotizacion.diasParaVencer}">0</span>
+                                    </td>
+                                    <td>
+                                        <span th:classappend="${cotizacion.estado == 'APROBADA'} ? 'badge bg-success' : 
+                                              ${cotizacion.estado == 'PENDIENTE'} ? 'badge bg-warning text-dark' : 
+                                              ${cotizacion.estado == 'RECHAZADA'} ? 'badge bg-danger' : 'badge bg-secondary'"
+                                              th:text="${cotizacion.estado}">PENDIENTE</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts específicos para informes de cotizaciones -->
+<th:block layout:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/informesCotizaciones.js}"></script>
+</th:block>
+</body>
+</html>

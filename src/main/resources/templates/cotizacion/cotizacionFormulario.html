@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title th:text="${cotizacion?.id != null} ? 'Editar Cotización - Sistema CV' : 'Nueva Cotización - Sistema CV'">
+            Formulario Cotización - Sistema CV
+        </title>
+
+        <!-- Estilos específicos para formulario de cotizaciones -->
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleCOTFOR.css}">
+    </th:block>
+</head>
+
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>
+                        <span th:text="${cotizacion?.id != null} ? 'Stylish Home ' + ${cotizacion?.codigo} : 'Nueva Cotización'">
+                            Nueva Cotización
+                        </span>
+                    </h2>
+                    <p class="text-muted mb-0">
+                        <span th:text="${cotizacion?.id != null} ? 'Modifique la información de la cotización' : 'Complete la información para crear una nueva cotización'">
+                            Complete la información para crear una nueva cotización
+                        </span>
+                    </p>
+                </div>
+                <div>
+                    <a th:href="@{/cotizaciones}" class="btn btn-outline-custom me-2">
+                        <i class="fas fa-arrow-left me-2"></i> Volver
+                    </a>
+                    <button type="button" class="btn btn-outline-custom" id="btnCalcular">
+                        <i class="fas fa-calculator me-2"></i> Calcular
+                    </button>
+                </div>
+            </div>
+
+            <form id="cotizacionForm" th:action="@{/cotizaciones/guardar}" method="post">
+                <input type="hidden" name="id" th:value="${cotizacion?.id}">
+
+                <!-- Información Básica -->
+                <div class="card card-custom mb-4">
+                    <div class="card-header card-header-custom">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información Básica</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="clienteId" class="form-label fw-bold">Cliente <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="clienteId" name="clienteId" required>
+                                        <option value="">Seleccione un cliente</option>
+                                        <option th:each="cliente : ${clientes}" 
+                                                th:value="${cliente.id}" 
+                                                th:text="${cliente.nombreCompleto} + ' - ' + ${cliente.email}"
+                                                th:selected="${cotizacion?.cliente?.id == cliente.id}">
+                                            Cliente - email@ejemplo.com
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="proyecto" class="form-label fw-bold">Proyecto</label>
+                                    <input type="text" class="form-control" id="proyecto" name="proyecto" 
+                                           th:value="${cotizacion?.proyecto}" placeholder="Nombre del proyecto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="fecha" class="form-label fw-bold">Fecha <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="fecha" name="fecha" 
+                                           th:value="${cotizacion?.fecha != null} ? ${#dates.format(cotizacion.fecha, 'yyyy-MM-dd')} : ${fechaActual}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="validoHasta" class="form-label fw-bold">Válido hasta <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" id="validoHasta" name="validoHasta" 
+                                           th:value="${cotizacion?.validoHasta != null} ? ${#dates.format(cotizacion.validoHasta, 'yyyy-MM-dd')} : ${fechaValido}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="vendedor" class="form-label fw-bold">Vendedor <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="vendedor" name="vendedor" 
+                                           th:value="${session.empleado?.nombreCompleto != null} ? ${session.empleado.nombreCompleto} : 'Asesor Comercial'" 
+                                           placeholder="Ingrese el nombre del vendedor" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Estado</label>
+                                    <div class="form-control bg-light">
+                                        <span th:if="${cotizacion?.id != null}" 
+                                              th:classappend="${cotizacion.estado == 'PENDIENTE'} ? 'badge bg-warning' : 
+                                              ${cotizacion.estado == 'APROBADA'} ? 'badge bg-success' : 
+                                              ${cotizacion.estado == 'RECHAZADA'} ? 'badge bg-danger' : 
+                                              'badge bg-info'"
+                                              th:text="${cotizacion.estado}">
+                                            PENDIENTE
+                                        </span>
+                                        <span th:unless="${cotizacion?.id != null}" class="badge bg-warning">
+                                            PENDIENTE
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos y Servicios -->
+                <div class="card card-custom mb-4">
+                    <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-boxes me-2"></i>Productos y Servicios</h5>
+                        <button type="button" class="btn btn-sm btn-custom" id="btnAgregarProducto">
+                            <i class="fas fa-plus me-1"></i>Agregar Producto
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="tablaProductos">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="40%">Producto</th>
+                                        <th width="15%">Cantidad</th>
+                                        <th width="15%">Precio Unitario</th>
+                                        <th width="15%">Descuento</th>
+                                        <th width="15%">Total</th>
+                                        <th width="5%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cuerpoTabla">
+                                    <!-- Filas existentes para edición -->
+                                    <tr th:if="${cotizacion?.detalles != null and !cotizacion.detalles.empty}" 
+                                        th:each="detalle, status : ${cotizacion.detalles}" 
+                                        class="fila-producto">
+                                        <td>
+                                            <select class="form-select producto-select" name="productoId" required>
+                                                <option value="">Seleccione producto</option>
+                                                <option th:each="producto : ${productos}" 
+                                                        th:value="${producto.id}"
+                                                        th:attr="data-precio=${producto.precio}"
+                                                        th:selected="${detalle.producto.id == producto.id}"
+                                                        th:text="${producto.nombre} + ' - $' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'DEFAULT')}">
+                                                    Producto - $0
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control cantidad" name="cantidad" 
+                                                   th:value="${detalle.cantidad}" min="1" required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control precio" name="precioUnitario" 
+                                                   th:value="${#numbers.formatDecimal(detalle.precioUnitario, 0, 'DEFAULT', 0, 'DEFAULT')}" required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control descuento" name="descuento" 
+                                                   th:value="${detalle.descuentoPorcentaje != null} ? ${detalle.descuentoPorcentaje + '%'} : 
+                                                   ${detalle.descuentoMonto != null} ? '$' + ${#numbers.formatDecimal(detalle.descuentoMonto, 0, 'DEFAULT', 0, 'DEFAULT')} : ''"
+                                                   placeholder="0% o $0">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control total-linea" 
+                                                   th:value="${#numbers.formatDecimal(detalle.total, 0, 'DEFAULT', 0, 'DEFAULT')}" readonly>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar-fila">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Fila vacía por defecto para nueva cotización -->
+                                    <tr th:if="${cotizacion?.detalles == null or cotizacion.detalles.empty}" class="fila-producto">
+                                        <td>
+                                            <select class="form-select producto-select" name="productoId" required>
+                                                <option value="">Seleccione producto</option>
+                                                <option th:each="producto : ${productos}" 
+                                                        th:value="${producto.id}"
+                                                        th:attr="data-precio=${producto.precio}"
+                                                        th:text="${producto.nombre} + ' - $' + ${#numbers.formatDecimal(producto.precio, 0, 'DEFAULT', 0, 'DEFAULT')}">
+                                                    Producto - $0
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control cantidad" name="cantidad" value="1" min="1" required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control precio" name="precioUnitario" value="0" required>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control descuento" name="descuento" placeholder="0% o $0">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control total-linea" value="0" readonly>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-danger btn-eliminar-fila">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen y Totales -->
+                <div class="card card-custom mb-4">
+                    <div class="card-header card-header-custom">
+                        <h5 class="mb-0"><i class="fas fa-calculator me-2"></i>Resumen Financiero</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="notas" class="form-label fw-bold">Notas</label>
+                                    <textarea class="form-control" id="notas" name="notas" rows="3" 
+                                              placeholder="Notas adicionales para la cotización" 
+                                              th:text="${cotizacion?.notas}"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="terminos" class="form-label fw-bold">Términos y Condiciones</label>
+                                    <textarea class="form-control" id="terminos" name="terminos" rows="3" 
+                                              placeholder="Términos y condiciones de la cotización" 
+                                              th:text="${cotizacion?.terminos}"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="bg-light p-3 rounded">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td class="fw-bold">Subtotal:</td>
+                                            <td class="text-end" id="subtotalResumen">
+                                                $<span th:text="${cotizacion?.subtotal != null} ? ${#numbers.formatDecimal(cotizacion.subtotal, 0, 'DEFAULT', 0, 'DEFAULT')} : '0'">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Descuento:</td>
+                                            <td class="text-end text-danger" id="descuentoResumen">
+                                                -$<span th:text="${cotizacion?.descuento != null} ? ${#numbers.formatDecimal(cotizacion.descuento, 0, 'DEFAULT', 0, 'DEFAULT')} : '0'">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">IVA (19%):</td>
+                                            <td class="text-end" id="ivaResumen">
+                                                $<span th:text="${cotizacion?.iva != null} ? ${#numbers.formatDecimal(cotizacion.iva, 0, 'DEFAULT', 0, 'DEFAULT')} : '0'">0</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-top">
+                                            <td class="fw-bold fs-5">Total:</td>
+                                            <td class="text-end fs-5 text-success fw-bold" id="totalResumen">
+                                                $<span th:text="${cotizacion?.total != null} ? ${#numbers.formatDecimal(cotizacion.total, 0, 'DEFAULT', 0, 'DEFAULT')} : '0'">0</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/cotizaciones}" class="btn btn-outline-custom">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </a>
+                    <div>
+                        <button type="button" class="btn btn-outline-custom me-2" id="btnCalcularFooter">
+                            <i class="fas fa-calculator me-2"></i>Calcular
+                        </button>
+                        <button type="submit" class="btn btn-custom" id="btnGuardar">
+                            <i class="fas me-2" th:classappend="${cotizacion?.id != null} ? 'fa-sync-alt' : 'fa-save'"></i>
+                            <span th:text="${cotizacion?.id != null} ? 'Actualizar Cotización' : 'Crear Cotización'">
+                                Crear Cotización
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts específicos para formulario de cotizaciones -->
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/cotizacionFormulario.js}"></script>
+</th:block>
+</body>
+</html>

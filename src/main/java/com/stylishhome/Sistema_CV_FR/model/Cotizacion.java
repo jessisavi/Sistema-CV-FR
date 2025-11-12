@@ -78,6 +78,14 @@ public class Cotizacion {
     }
 
     /**
+     * Método para generar código de cotización (usado en dashboard)
+     */
+    public String getCodigo() {
+        return "COT-" + (this.fecha != null ? this.fecha.getYear() : "2025")
+                + "-" + String.format("%05d", this.idCotizacion != null ? this.idCotizacion : 0);
+    }
+
+    /**
      * Método helper para agregar un detalle a la cotización
      */
     public void agregarDetalle(CotizacionDetalle detalle) {
@@ -102,17 +110,17 @@ public class Cotizacion {
         if (this.fecha == null) {
             this.fecha = LocalDate.now();
         }
-        
+
         // Establecer fecha de validez por defecto (15 días)
         if (this.validoHasta == null) {
             this.validoHasta = this.fecha.plusDays(15);
         }
-        
+
         // Establecer fecha de creación si no está definida
         if (this.fechaCreacion == null) {
             this.fechaCreacion = LocalDateTime.now();
         }
-        
+
         // Calcular totales iniciales
         calcularTotales();
     }

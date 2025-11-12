@@ -18,26 +18,48 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/clientes")
 public class ClienteController {
-    
+
     @Autowired
     private ClienteService clienteService;
-    
+
     /**
      * Muestra la lista de todos los clientes
      */
     @GetMapping
-    public String listarClientes(Model model, HttpSession session) {
+    public String listarClientes(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String estado,
+            Model model,
+            HttpSession session) {
+
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
-        List<Cliente> clientes = clienteService.obtenerTodosLosClientes();
+
+        List<Cliente> clientes;
+
+        // ✅ LÓGICA DE FILTRADO CORREGIDA
+        if (search != null && !search.trim().isEmpty()) {
+            clientes = clienteService.buscarClientesPorNombreOApellido(search);
+            model.addAttribute("search", search);
+        } else if (tipo != null && !tipo.trim().isEmpty()) {
+            clientes = clienteService.obtenerClientesPorTipo(tipo);
+            model.addAttribute("tipo", tipo);
+        } else if (estado != null && !estado.trim().isEmpty()) {
+            // Necesitarás agregar este método en el servicio
+            clientes = clienteService.obtenerClientesPorEstado(estado);
+            model.addAttribute("estado", estado);
+        } else {
+            clientes = clienteService.obtenerTodosLosClientes();
+        }
+
         model.addAttribute("clientes", clientes);
         model.addAttribute("titulo", "Lista de Clientes");
-        
+
         return "clientes/lista";
     }
-    
+
     /**
      * Muestra el formulario para crear un nuevo cliente
      */
@@ -46,25 +68,25 @@ public class ClienteController {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("titulo", "Nuevo Cliente");
         model.addAttribute("modo", "crear");
-        
+
         return "clientes/formulario";
     }
-    
+
     /**
      * Procesa el guardado de un nuevo cliente
      */
     @PostMapping("/guardar")
     public String guardarCliente(@ModelAttribute Cliente cliente,
-                               RedirectAttributes redirectAttributes,
-                               HttpSession session) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         try {
             clienteService.guardarCliente(cliente);
             redirectAttributes.addFlashAttribute("success", "Cliente guardado exitosamente");
@@ -73,10 +95,10 @@ public class ClienteController {
             redirectAttributes.addFlashAttribute("cliente", cliente);
             return "redirect:/clientes/nuevo";
         }
-        
+
         return "redirect:/clientes";
     }
-    
+
     /**
      * Muestra los detalles de un cliente específico
      */
@@ -85,19 +107,19 @@ public class ClienteController {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         Optional<Cliente> clienteOpt = clienteService.obtenerClientePorId(id);
         if (clienteOpt.isEmpty()) {
             model.addAttribute("error", "Cliente no encontrado");
             return "redirect:/clientes";
         }
-        
+
         model.addAttribute("cliente", clienteOpt.get());
         model.addAttribute("titulo", "Detalles del Cliente");
-        
+
         return "clientes/detalle";
     }
-    
+
     /**
      * Muestra el formulario para editar un cliente existente
      */
@@ -106,32 +128,32 @@ public class ClienteController {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         Optional<Cliente> clienteOpt = clienteService.obtenerClientePorId(id);
         if (clienteOpt.isEmpty()) {
             model.addAttribute("error", "Cliente no encontrado");
             return "redirect:/clientes";
         }
-        
+
         model.addAttribute("cliente", clienteOpt.get());
         model.addAttribute("titulo", "Editar Cliente");
         model.addAttribute("modo", "editar");
-        
+
         return "clientes/formulario";
     }
-    
+
     /**
      * Procesa la actualización de un cliente existente
      */
     @PostMapping("/actualizar/{id}")
     public String actualizarCliente(@PathVariable Integer id,
-                                  @ModelAttribute Cliente cliente,
-                                  RedirectAttributes redirectAttributes,
-                                  HttpSession session) {
+            @ModelAttribute Cliente cliente,
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         try {
             cliente.setIdCliente(id); // Asegurar que el ID sea el correcto
             clienteService.guardarCliente(cliente);
@@ -140,41 +162,41 @@ public class ClienteController {
             redirectAttributes.addFlashAttribute("error", "Error al actualizar el cliente: " + e.getMessage());
             return "redirect:/clientes/editar/" + id;
         }
-        
+
         return "redirect:/clientes";
     }
-    
+
     /**
      * Elimina un cliente
      */
     @PostMapping("/eliminar/{id}")
     public String eliminarCliente(@PathVariable Integer id,
-                                RedirectAttributes redirectAttributes,
-                                HttpSession session) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         try {
             clienteService.eliminarCliente(id);
             redirectAttributes.addFlashAttribute("success", "Cliente eliminado exitosamente");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al eliminar el cliente: " + e.getMessage());
         }
-        
+
         return "redirect:/clientes";
     }
-    
+
     /**
      * Busca clientes por criterios
      */
     @GetMapping("/buscar")
     public String buscarClientes(@RequestParam(required = false) String criterio,
-                               Model model, HttpSession session) {
+            Model model, HttpSession session) {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         List<Cliente> clientes;
         if (criterio != null && !criterio.trim().isEmpty()) {
             clientes = clienteService.buscarClientesPorNombreOApellido(criterio);
@@ -182,13 +204,13 @@ public class ClienteController {
         } else {
             clientes = clienteService.obtenerTodosLosClientes();
         }
-        
+
         model.addAttribute("clientes", clientes);
         model.addAttribute("titulo", "Resultados de Búsqueda");
-        
+
         return "clientes/lista";
     }
-    
+
     /**
      * Muestra clientes por tipo
      */
@@ -197,15 +219,15 @@ public class ClienteController {
         if (session.getAttribute("usuario") == null) {
             return "redirect:/login";
         }
-        
+
         List<Cliente> clientes = clienteService.obtenerClientesPorTipo(tipo);
         model.addAttribute("clientes", clientes);
         model.addAttribute("titulo", "Clientes " + tipo);
         model.addAttribute("filtroTipo", tipo);
-        
+
         return "clientes/lista";
     }
-    
+
     /**
      * API para obtener clientes en formato JSON (para AJAX)
      */
@@ -217,7 +239,7 @@ public class ClienteController {
         }
         return clienteService.obtenerTodosLosClientes();
     }
-    
+
     /**
      * API para buscar clientes por criterio (para AJAX)
      */

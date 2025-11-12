@@ -1,0 +1,537 @@
+:root {
+    --color-primary: #000000;
+    --color-secondary: #d9d9d9;
+    --color-accent: #cb9a28;
+    --color-light: #f8f9fa;
+    --color-success: #28a745;
+    --color-danger: #dc3545;
+    --color-warning: #ffc107;
+    --color-info: #17a2b8;
+}
+
+/* Contenedor principal del dashboard */
+.container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Cards de métricas */
+.dashboard-card {
+    border: 2px solid var(--color-accent);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(203, 154, 40, 0.1);
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    background: white;
+    height: 100%;
+    min-height: 140px;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(203, 154, 40, 0.2);
+    border-color: var(--color-primary);
+}
+
+.dashboard-card .card-body {
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-card .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dashboard-card .card-text {
+    margin-bottom: 5px;
+}
+
+.dashboard-card h2.card-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 10px 0;
+}
+
+.dashboard-card .text-success {
+    color: var(--color-success) !important;
+    font-weight: 500;
+}
+
+/* Iconos de las cards */
+.card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    opacity: 0.15;
+    color: var(--color-primary);
+    z-index: 1;
+}
+
+.card-icon i {
+    color: inherit;
+}
+
+/* Bordes laterales para las cards de métricas */
+.row.mb-4 .col-md-3:nth-child(1) .dashboard-card {
+    border-left: 4px solid var(--color-primary);
+}
+
+.row.mb-4 .col-md-3:nth-child(2) .dashboard-card {
+    border-left: 4px solid var(--color-accent);
+}
+
+.row.mb-4 .col-md-3:nth-child(3) .dashboard-card {
+    border-left: 4px solid var(--color-primary);
+}
+
+.row.mb-4 .col-md-3:nth-child(4) .dashboard-card {
+    border-left: 4px solid var(--color-accent);
+}
+
+/* Contenedor del gráfico */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 5px;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+/* Acciones rápidas */
+.quick-action {
+    display: block;
+    text-align: center;
+    padding: 25px 15px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+    min-height: 160px;
+    border: 2px solid transparent;
+    text-decoration: none;
+    color: inherit;
+}
+
+.quick-action:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(203, 154, 40, 0.15);
+    border-color: var(--color-accent);
+}
+
+/* Círculos de iconos */
+.quick-action i {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 15px;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.quick-action:hover i {
+    transform: scale(1.1);
+}
+
+.action-primary {
+    background-color: var(--color-primary);
+}
+
+.action-accent {
+    background-color: var(--color-accent);
+}
+
+.action-success {
+    background-color: var(--color-primary);
+}
+
+.action-danger {
+    background-color: var(--color-accent);
+}
+
+.quick-action h6 {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+    display: block;
+}
+
+.quick-action small {
+    color: #6c757d;
+    line-height: 1.4;
+    font-size: 0.85rem;
+    display: block;
+}
+
+/* Contenedores de estadísticas */
+.stats-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    height: 100%;
+    border: 1px solid #f0f0f0;
+}
+
+.stats-container h5 {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Actividad reciente */
+.activity-item {
+    display: flex;
+    margin-bottom: 25px;
+    position: relative;
+    padding-left: 30px;
+}
+
+.activity-item:not(:last-child):before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 25px;
+    bottom: -25px;
+    width: 2px;
+    background-color: var(--color-secondary);
+}
+
+.activity-dot {
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    z-index: 1;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.activity-item h6 {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.activity-item p {
+    margin-bottom: 5px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.activity-item small {
+    color: #999;
+    font-size: 0.85rem;
+}
+
+/* Tablas */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 15px 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    padding: 12px;
+    vertical-align: middle;
+    border-color: #f0f0f0;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(203, 154, 40, 0.05);
+}
+
+/* Badges */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+.badge.bg-success {
+    background-color: var(--color-success) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--color-danger) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--color-warning) !important;
+    color: #000;
+}
+
+/* Botones personalizados */
+.btn-outline-custom {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    font-weight: 500;
+}
+
+.btn-outline-custom:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+/* Alertas */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #155724;
+    border-left: 4px solid var(--color-success);
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #721c24;
+    border-left: 4px solid var(--color-danger);
+}
+
+/* Animaciones AOS personalizadas */
+[data-aos] {
+    opacity: 0;
+    transition-property: transform, opacity;
+}
+
+[data-aos].aos-animate {
+    opacity: 1;
+}
+
+/* Estados vacíos */
+.text-center.py-4 {
+    padding: 3rem 1rem !important;
+}
+
+.text-center.py-4 i {
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.text-center.py-4 h5 {
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.text-center.py-4 p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+/* Utilidades específicas del dashboard */
+.dashboard-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 0.5rem;
+}
+
+/* Efectos de hover mejorados */
+.dashboard-card:hover .card-icon {
+    opacity: 0.25;
+    transform: scale(1.05);
+}
+
+.quick-action:hover h6 {
+    color: var(--color-accent);
+}
+
+/* Estados de carga */
+.loading-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .container-fluid {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 992px) {
+    .dashboard-card h2.card-text {
+        font-size: 1.5rem;
+    }
+    
+    .dashboard-card {
+        margin-bottom: 15px;
+    }
+    
+    .quick-action {
+        min-height: 140px;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .chart-container {
+        height: 220px;
+    }
+
+    .quick-action {
+        padding: 20px 10px;
+        min-height: 130px;
+    }
+
+    .quick-action i {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+    
+    .activity-item {
+        padding-left: 25px;
+        margin-bottom: 20px;
+    }
+    
+    .activity-dot {
+        left: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-card .card-body {
+        padding: 15px;
+    }
+    
+    .dashboard-card h2.card-text {
+        font-size: 1.3rem;
+    }
+
+    .stats-container {
+        padding: 15px;
+    }
+    
+    .chart-container {
+        height: 200px;
+    }
+    
+    .quick-action {
+        padding: 15px 8px;
+        min-height: 120px;
+    }
+    
+    .quick-action i {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+    
+    .quick-action h6 {
+        font-size: 0.9rem;
+    }
+    
+    .quick-action small {
+        font-size: 0.75rem;
+    }
+    
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        top: 15px;
+        right: 15px;
+    }
+}

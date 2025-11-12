@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <namespace name="th" description="Thymeleaf">
+        <attribute name="href"/>
+        <attribute name="src"/>
+        <attribute name="if"/>
+        <attribute name="each"/>
+        <attribute name="text"/>
+        <attribute name="value"/>
+        <attribute name="selected"/>
+        <attribute name="unless"/>
+        <attribute name="block"/>
+        <attribute name="replace"/>
+        <attribute name="action"/>
+        <attribute name="method"/>
+        <attribute name="object"/>
+        <attribute name="attr"/>
+        <attribute name="classappend"/>
+        <attribute name="disabled"/>
+        <attribute name="readonly"/>
+        <attribute name="checked"/>
+        <attribute name="required"/>
+        <attribute name="placeholder"/>
+        <attribute name="title"/>
+        <attribute name="alt"/>
+    </namespace>
+</root>

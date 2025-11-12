@@ -1,0 +1,609 @@
+:root {
+    --cotizacion-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --cotizacion-shadow-md: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --cotizacion-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --cotizacion-shadow-xl: 0 10px 40px rgba(0, 0, 0, 0.15);
+    --cotizacion-radius: 8px;
+    --cotizacion-radius-lg: 12px;
+    --cotizacion-radius-xl: 20px;
+    --cotizacion-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Layout específico para informes de cotizaciones */
+.informes-cotizaciones-container {
+    min-height: calc(100vh - 200px);
+}
+
+/* Header de página específico */
+.page-header-cotizaciones {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(203, 154, 40, 0.1) 100%);
+    border-radius: var(--cotizacion-radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Sección de filtros específica */
+.filtros-cotizaciones {
+    background: linear-gradient(135deg, #fff 0%, var(--color-light) 100%);
+    border-radius: var(--cotizacion-radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--cotizacion-shadow-md);
+    border: 1px solid rgba(203, 154, 40, 0.1);
+}
+
+.filtros-cotizaciones h5 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.filtros-cotizaciones .form-control,
+.filtros-cotizaciones .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: var(--cotizacion-radius);
+    padding: 0.625rem 0.9375rem;
+    transition: var(--cotizacion-transition);
+}
+
+.filtros-cotizaciones .form-control:focus,
+.filtros-cotizaciones .form-select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(203, 154, 40, 0.1);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+/* Tarjetas de estadísticas específicas para cotizaciones */
+.estadisticas-cotizaciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.875rem;
+}
+
+.tarjeta-estadistica-cotizacion {
+    background: white;
+    border-radius: var(--cotizacion-radius-lg);
+    padding: 1.5625rem;
+    box-shadow: var(--cotizacion-shadow-md);
+    border-left: 4px solid transparent;
+    transition: var(--cotizacion-transition);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUpCotizacion 0.5s ease-out;
+}
+
+.tarjeta-estadistica-cotizacion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+
+.tarjeta-estadistica-cotizacion:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--cotizacion-shadow-xl);
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(1) {
+    border-left-color: var(--color-primary);
+    animation-delay: 0.1s;
+}
+.tarjeta-estadistica-cotizacion:nth-child(1)::before {
+    background: linear-gradient(90deg, var(--color-primary) 0%, transparent 100%);
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(2) {
+    border-left-color: var(--color-success);
+    animation-delay: 0.2s;
+}
+.tarjeta-estadistica-cotizacion:nth-child(2)::before {
+    background: linear-gradient(90deg, var(--color-success) 0%, transparent 100%);
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(3) {
+    border-left-color: var(--color-warning);
+    animation-delay: 0.3s;
+}
+.tarjeta-estadistica-cotizacion:nth-child(3)::before {
+    background: linear-gradient(90deg, var(--color-warning) 0%, transparent 100%);
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(4) {
+    border-left-color: var(--color-info);
+    animation-delay: 0.4s;
+}
+.tarjeta-estadistica-cotizacion:nth-child(4)::before {
+    background: linear-gradient(90deg, var(--color-info) 0%, transparent 100%);
+}
+
+.valor-estadistica-cotizacion {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(1) .valor-estadistica-cotizacion {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2c2c2c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(2) .valor-estadistica-cotizacion {
+    background: linear-gradient(135deg, var(--color-success) 0%, #1e7e34 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(3) .valor-estadistica-cotizacion {
+    background: linear-gradient(135deg, var(--color-warning) 0%, #e0a800 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tarjeta-estadistica-cotizacion:nth-child(4) .valor-estadistica-cotizacion {
+    background: linear-gradient(135deg, var(--color-info) 0%, #138496 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.etiqueta-estadistica-cotizacion {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 0.3125rem;
+}
+
+.descripcion-estadistica-cotizacion {
+    font-size: 0.8rem;
+    color: #adb5bd;
+    margin: 0;
+}
+
+/* Icono de reporte específico para cotizaciones */
+.icono-reporte-cotizacion {
+    width: 3.125rem;
+    height: 3.125rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Grid de gráficos específico para cotizaciones */
+.grid-graficos-cotizaciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5625rem;
+    margin-bottom: 1.875rem;
+}
+
+.tarjeta-grafico-cotizacion {
+    background: white;
+    border-radius: var(--cotizacion-radius-lg);
+    padding: 1.5625rem;
+    box-shadow: var(--cotizacion-shadow-md);
+    border: 1px solid rgba(203, 154, 40, 0.1);
+    transition: var(--cotizacion-transition);
+    animation: fadeInUpCotizacion 0.5s ease-out;
+}
+
+.tarjeta-grafico-cotizacion:hover {
+    box-shadow: var(--cotizacion-shadow-lg);
+    transform: translateY(-3px);
+}
+
+.encabezado-grafico-cotizacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.9375rem;
+    border-bottom: 2px solid rgba(203, 154, 40, 0.1);
+}
+
+.encabezado-grafico-cotizacion h5 {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin: 0;
+}
+
+.contenedor-grafico-cotizacion {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Tabla específica para informes de cotizaciones */
+.tabla-cotizaciones-informes {
+    border-radius: var(--cotizacion-radius);
+    overflow: hidden;
+    box-shadow: var(--cotizacion-shadow-sm);
+}
+
+.tabla-cotizaciones-informes th {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #2c2c2c 100%);
+    color: white;
+    border: none;
+    padding: 0.9375rem 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.tabla-cotizaciones-informes td {
+    padding: 0.9375rem 0.75rem;
+    vertical-align: middle;
+    border-color: var(--color-light);
+    transition: var(--cotizacion-transition);
+}
+
+.tabla-cotizaciones-informes tbody tr {
+    transition: var(--cotizacion-transition);
+}
+
+.tabla-cotizaciones-informes tbody tr:hover {
+    background-color: rgba(203, 154, 40, 0.08);
+    transform: translateY(-1px);
+    box-shadow: var(--cotizacion-shadow-sm);
+}
+
+/* Anchos de columnas específicos para la tabla de cotizaciones */
+.tabla-cotizaciones-informes th:nth-child(1) { width: 120px; }  /* N° Cotización */
+.tabla-cotizaciones-informes th:nth-child(2) { width: 100px; }  /* Fecha */
+.tabla-cotizaciones-informes th:nth-child(3) { width: 150px; }  /* Cliente */
+.tabla-cotizaciones-informes th:nth-child(4) { width: 120px; }  /* Vendedor */
+.tabla-cotizaciones-informes th:nth-child(5) { width: 200px; }  /* Producto */
+.tabla-cotizaciones-informes th:nth-child(6) { width: 80px; }   /* Cantidad */
+.tabla-cotizaciones-informes th:nth-child(7) { width: 120px; }  /* Precio Unit. */
+.tabla-cotizaciones-informes th:nth-child(8) { width: 120px; }  /* Total */
+.tabla-cotizaciones-informes th:nth-child(9) { width: 100px; }  /* Vence */
+.tabla-cotizaciones-informes th:nth-child(10) { width: 90px; }  /* Días Rest. */
+.tabla-cotizaciones-informes th:nth-child(11) { width: 110px; } /* Estado */
+
+/* Estados de cotizaciones específicos */
+.estado-cotizacion-informe {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--cotizacion-radius-xl);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: var(--cotizacion-transition);
+}
+
+.estado-cotizacion-informe:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--cotizacion-shadow-sm);
+}
+
+.estado-aprobada-informe {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.15) 0%, rgba(40, 167, 69, 0.25) 100%);
+    color: var(--color-success);
+    border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.estado-pendiente-informe {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0.25) 100%);
+    color: var(--color-warning);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.estado-rechazada-informe {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.15) 0%, rgba(220, 53, 69, 0.25) 100%);
+    color: var(--color-danger);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.estado-vencida-informe {
+    background: linear-gradient(135deg, rgba(108, 117, 125, 0.15) 0%, rgba(108, 117, 125, 0.25) 100%);
+    color: #6c757d;
+    border: 1px solid rgba(108, 117, 125, 0.3);
+}
+
+/* Indicador de días para vencer específico */
+.dias-vencimiento-cotizacion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.9375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 3.125rem;
+    justify-content: center;
+    transition: var(--cotizacion-transition);
+}
+
+.dias-vencimiento-cotizacion:hover {
+    transform: scale(1.05);
+}
+
+.dias-urgente-cotizacion {
+    background: linear-gradient(135deg, var(--color-danger) 0%, #c82333 100%);
+    color: white;
+    animation: pulseCotizacion 2s infinite;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.dias-alerta-cotizacion {
+    background: linear-gradient(135deg, var(--color-warning) 0%, #e0a800 100%);
+    color: #212529;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+}
+
+.dias-normal-cotizacion {
+    background: linear-gradient(135deg, var(--color-success) 0%, #1e7e34 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.dias-vencido-cotizacion {
+    background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+    color: white;
+    opacity: 0.8;
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Sección de tasa de conversión específica */
+.tasa-conversion-cotizacion {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: var(--cotizacion-radius-lg);
+    padding: 1.875rem;
+    text-align: center;
+    margin-bottom: 1.5625rem;
+    box-shadow: var(--cotizacion-shadow-md);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUpCotizacion 0.5s ease-out;
+    transition: var(--cotizacion-transition);
+}
+
+.tasa-conversion-cotizacion::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 12.5rem;
+    height: 12.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.tasa-conversion-cotizacion::after {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: -50%;
+    width: 15.625rem;
+    height: 15.625rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.tasa-conversion-cotizacion:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.tasa-conversion-cotizacion .valor-conversion {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 0.625rem;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tasa-conversion-cotizacion .etiqueta-conversion {
+    font-size: 1rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+.tasa-conversion-cotizacion .descripcion-conversion {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 0.625rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Botones específicos para informes de cotizaciones */
+.btn-cotizaciones {
+    background: linear-gradient(135deg, var(--color-accent) 0%, #b8860b 100%);
+    border: none;
+    color: white;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--cotizacion-radius);
+    font-weight: 500;
+    transition: var(--cotizacion-transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cotizaciones:hover {
+    background: linear-gradient(135deg, #b8860b 0%, var(--color-accent) 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(203, 154, 40, 0.3);
+}
+
+.btn-outline-cotizaciones {
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+    background: transparent;
+    padding: 0.5rem 1rem;
+    border-radius: var(--cotizacion-radius);
+    transition: var(--cotizacion-transition);
+    font-weight: 500;
+}
+
+.btn-outline-cotizaciones:hover {
+    background: var(--color-accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(203, 154, 40, 0.3);
+}
+
+/* Animaciones específicas para cotizaciones */
+@keyframes fadeInUpCotizacion {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseCotizacion {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 4px 16px rgba(220, 53, 69, 0.5);
+    }
+}
+
+/* Estados vacíos específicos para cotizaciones */
+.estado-vacio-cotizaciones {
+    padding: 3rem 1rem !important;
+}
+
+.estado-vacio-cotizaciones i {
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.estado-vacio-cotizaciones h4 {
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.estado-vacio-cotizaciones p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive específico para informes de cotizaciones */
+@media (max-width: 992px) {
+    .estadisticas-cotizaciones {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0.9375rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .estadisticas-cotizaciones,
+    .grid-graficos-cotizaciones {
+        grid-template-columns: 1fr;
+    }
+
+    .tarjeta-estadistica-cotizacion {
+        padding: 1.25rem;
+    }
+
+    .valor-estadistica-cotizacion {
+        font-size: 2rem;
+    }
+
+    .tarjeta-grafico-cotizacion {
+        padding: 0.9375rem;
+    }
+
+    .encabezado-grafico-cotizacion {
+        flex-direction: column;
+        gap: 0.625rem;
+        text-align: center;
+    }
+
+    .tasa-conversion-cotizacion {
+        padding: 1.5625rem;
+    }
+
+    .tasa-conversion-cotizacion .valor-conversion {
+        font-size: 2.5rem;
+    }
+
+    .tabla-cotizaciones-informes {
+        font-size: 0.85rem;
+    }
+
+    .tabla-cotizaciones-informes th,
+    .tabla-cotizaciones-informes td {
+        padding: 0.625rem 0.5rem;
+    }
+
+    .contenedor-grafico-cotizacion {
+        height: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .informes-cotizaciones-container {
+        padding: 0.625rem;
+    }
+
+    .page-header-cotizaciones {
+        flex-direction: column;
+        gap: 0.625rem;
+        text-align: center;
+    }
+
+    .filtros-cotizaciones {
+        padding: 0.9375rem;
+    }
+
+    .tabla-cotizaciones-informes {
+        font-size: 0.75rem;
+    }
+
+    .valor-estadistica-cotizacion {
+        font-size: 1.75rem;
+    }
+
+    .encabezado-grafico-cotizacion {
+        flex-direction: column;
+        gap: 0.625rem;
+        text-align: center;
+    }
+
+    .tasa-conversion-cotizacion {
+        padding: 1.25rem;
+    }
+
+    .tasa-conversion-cotizacion .valor-conversion {
+        font-size: 2rem;
+    }
+
+    .dias-vencimiento-cotizacion {
+        font-size: 0.7rem;
+        padding: 0.1875rem 0.5rem;
+    }
+}

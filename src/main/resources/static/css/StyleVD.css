@@ -1,0 +1,514 @@
+:root {
+    --venta-card-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    --venta-card-hover-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --venta-header-gradient: linear-gradient(135deg, var(--color-primary) 0%, #2c2c2c 100%);
+    --venta-badge-radius: 20px;
+    --venta-image-size: 50px;
+}
+
+/* Contenedor principal del detalle de venta */
+.venta-detalle-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header de la factura */
+.venta-header {
+    background: var(--venta-header-gradient);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem 2rem;
+    margin-bottom: 0;
+}
+
+.venta-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.venta-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+}
+
+/* Badges de estado específicos para ventas */
+.badge-estado-venta {
+    padding: 0.5rem 1rem;
+    border-radius: var(--venta-badge-radius);
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: none;
+}
+
+.badge-estado-venta.completada {
+    background: linear-gradient(135deg, var(--color-success) 0%, #1e7e34 100%);
+    color: white;
+}
+
+.badge-estado-venta.pendiente {
+    background: linear-gradient(135deg, var(--color-warning) 0%, #e0a800 100%);
+    color: #000;
+}
+
+.badge-estado-venta.cancelada {
+    background: linear-gradient(135deg, var(--color-danger) 0%, #c82333 100%);
+    color: white;
+}
+
+/* Información de cliente y venta */
+.venta-info-section {
+    background: white;
+    padding: 2rem;
+    border-bottom: 1px solid var(--color-secondary);
+}
+
+.venta-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.venta-info-group h6 {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 0.5rem;
+}
+
+.venta-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.venta-info-item:last-child {
+    border-bottom: none;
+}
+
+.venta-info-label {
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+.venta-info-value {
+    color: var(--color-primary);
+    text-align: right;
+    flex: 1;
+}
+
+/* Tabla de productos en detalle de venta */
+.venta-productos-table {
+    background: white;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+.venta-productos-table thead th {
+    background: var(--venta-header-gradient);
+    color: white;
+    border: none;
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.venta-productos-table tbody td {
+    padding: 1.25rem;
+    vertical-align: middle;
+    border-color: rgba(0, 0, 0, 0.05);
+}
+
+.venta-producto-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.venta-producto-imagen {
+    width: var(--venta-image-size);
+    height: var(--venta-image-size);
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--color-secondary);
+    flex-shrink: 0;
+}
+
+.venta-producto-info {
+    flex: 1;
+}
+
+.venta-producto-nombre {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.25rem;
+}
+
+.venta-producto-descripcion {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.venta-producto-codigo {
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Resumen de totales */
+.venta-resumen-section {
+    background: white;
+    padding: 2rem;
+}
+
+.venta-resumen-card {
+    background: var(--color-light);
+    border: 1px solid var(--color-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.venta-resumen-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.venta-resumen-item:last-child {
+    border-bottom: none;
+}
+
+.venta-resumen-total {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    border-top: 2px solid var(--color-accent);
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Sección de notas */
+.venta-notas-section {
+    background: white;
+    padding: 2rem;
+    border-top: 1px solid var(--color-secondary);
+}
+
+.venta-notas-content {
+    background: var(--color-light);
+    border: 1px solid var(--color-secondary);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Acciones de venta */
+.venta-acciones-section {
+    background: white;
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--color-secondary);
+    border-radius: 0 0 12px 12px;
+}
+
+.venta-acciones-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+/* Estados de venta específicos */
+.venta-estado-completada .venta-header {
+    background: linear-gradient(135deg, var(--color-success) 0%, #1e7e34 100%);
+}
+
+.venta-estado-pendiente .venta-header {
+    background: linear-gradient(135deg, var(--color-warning) 0%, #e0a800 100%);
+}
+
+.venta-estado-cancelada .venta-header {
+    background: linear-gradient(135deg, var(--color-danger) 0%, #c82333 100%);
+}
+
+/* Efectos hover específicos para elementos de venta */
+.venta-producto-item:hover .venta-producto-imagen {
+    border-color: var(--color-accent);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.venta-resumen-item:hover {
+    background-color: rgba(203, 154, 40, 0.05);
+    border-radius: 4px;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+/* Utilidades específicas para venta-detalle */
+.text-venta-total {
+    color: var(--color-accent);
+    font-weight: 700;
+}
+
+.text-venta-subtotal {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.text-venta-iva {
+    color: var(--color-info);
+    font-weight: 500;
+}
+
+/* Estados vacíos o sin datos */
+.venta-vacia {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6c757d;
+}
+
+.venta-vacia-icon {
+    font-size: 3rem;
+    color: var(--color-secondary);
+    margin-bottom: 1rem;
+}
+
+/* Responsive Design para venta-detalle */
+@media (max-width: 768px) {
+    .venta-header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .venta-title {
+        font-size: 1.25rem;
+    }
+    
+    .venta-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .venta-info-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: left;
+    }
+    
+    .venta-info-label {
+        min-width: auto;
+    }
+    
+    .venta-info-value {
+        text-align: left;
+    }
+    
+    .venta-producto-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    .venta-acciones-grid {
+        justify-content: center;
+    }
+    
+    .venta-resumen-card {
+        margin: 0 auto;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .venta-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .venta-info-section,
+    .venta-resumen-section,
+    .venta-notas-section,
+    .venta-acciones-section {
+        padding: 1.25rem;
+    }
+    
+    .venta-producto-imagen {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .badge-estado-venta {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .venta-acciones-grid {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .venta-acciones-grid .btn {
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* Estilos de impresión específicos para venta-detalle */
+@media print {
+    .venta-detalle-container {
+        max-width: none;
+        margin: 0;
+    }
+    
+    .venta-header {
+        background: #f8f9fa !important;
+        color: var(--color-primary) !important;
+        border-bottom: 3px solid var(--color-accent);
+    }
+    
+    .venta-productos-table thead th {
+        background: #f8f9fa !important;
+        color: var(--color-primary) !important;
+        border-bottom: 2px solid var(--color-accent);
+    }
+    
+    .venta-acciones-section {
+        display: none !important;
+    }
+    
+    .venta-resumen-card {
+        border: 2px solid var(--color-primary);
+        background: white !important;
+    }
+    
+    .venta-producto-imagen {
+        border: 1px solid #ddd !important;
+    }
+    
+    /* Mejorar legibilidad en impresión */
+    .venta-info-item,
+    .venta-resumen-item {
+        border-color: #ddd !important;
+    }
+}
+
+/* Animaciones específicas para venta-detalle */
+@keyframes ventaFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.venta-detalle-container {
+    animation: ventaFadeIn 0.5s ease-out;
+}
+
+.venta-productos-table tbody tr {
+    animation: ventaFadeIn 0.3s ease-out;
+}
+
+.venta-productos-table tbody tr:nth-child(odd) {
+    animation-delay: 0.1s;
+}
+
+.venta-productos-table tbody tr:nth-child(even) {
+    animation-delay: 0.2s;
+}
+
+/* Estados de carga específicos para venta-detalle */
+.venta-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.venta-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+}
+
+.venta-loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--color-secondary);
+    border-top: 3px solid var(--color-accent);
+    border-radius: 50%;
+    animation: ventaSpin 1s linear infinite;
+    z-index: 10;
+}
+
+@keyframes ventaSpin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Modo oscuro para venta-detalle */
+@media (prefers-color-scheme: dark) {
+    .venta-info-section,
+    .venta-resumen-section,
+    .venta-notas-section,
+    .venta-acciones-section {
+        background: #2d3748;
+        color: white;
+    }
+    
+    .venta-productos-table tbody td {
+        background: #2d3748;
+        color: white;
+        border-color: #4a5568;
+    }
+    
+    .venta-resumen-card {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .venta-notas-content {
+        background: #4a5568;
+        border-color: #718096;
+        color: white;
+    }
+    
+    .venta-info-label,
+    .venta-producto-nombre {
+        color: white;
+    }
+    
+    .venta-producto-descripcion {
+        color: #cbd5e0;
+    }
+}

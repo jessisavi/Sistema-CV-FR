@@ -47,6 +47,20 @@ public class CotizacionService {
     }
 
     /**
+     * Obtiene las últimas cotizaciones para el dashboard
+     */
+    public List<Cotizacion> obtenerUltimasCotizaciones(int limite) {
+        return cotizacionRepository.findTopNByOrderByFechaDesc(limite);
+    }
+
+    /**
+     * Cuenta el total de cotizaciones
+     */
+    public Long contarTotalCotizaciones() {
+        return cotizacionRepository.count();
+    }
+
+    /**
      * Crea una nueva cotización
      */
     public Cotizacion crearCotizacion(Cotizacion cotizacion) {
@@ -63,7 +77,6 @@ public class CotizacionService {
         }
 
         // Los totales se calculan automáticamente con @PrePersist y @PreUpdate
-        // No es necesario llamar calcularTotales() manualmente
         return cotizacionRepository.save(cotizacion);
     }
 
@@ -78,7 +91,6 @@ public class CotizacionService {
         cotizacion.setIdCotizacion(id);
         validarCotizacion(cotizacion);
         // Los totales se calculan automáticamente con @PreUpdate
-        // No es necesario llamar calcularTotales() manualmente
 
         return cotizacionRepository.save(cotizacion);
     }
@@ -174,7 +186,6 @@ public class CotizacionService {
         detalle.setProducto(producto);
         cotizacion.agregarDetalle(detalle);
         // Los totales se calculan automáticamente con @PreUpdate
-        // No es necesario llamar calcularTotales() manualmente
 
         return cotizacionRepository.save(cotizacion);
     }
@@ -193,7 +204,6 @@ public class CotizacionService {
 
         cotizacion.removerDetalle(detalle);
         // Los totales se calculan automáticamente con @PreUpdate
-        // No es necesario llamar calcularTotales() manualmente
 
         return cotizacionRepository.save(cotizacion);
     }

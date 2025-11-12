@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title>Lista de Ventas</title>
+
+        <!-- Estilos específicos para la página de ventas -->
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleVL.css}">
+    </th:block>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <!-- Mensajes flash -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0"><i class="fas fa-shopping-cart me-2"></i> Gestión de Ventas</h2>
+                <a th:href="@{/ventas/nueva}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Nueva Venta
+                </a>
+            </div>
+
+            <!-- Estadísticas de Ventas -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Ventas Hoy</h5>
+                            <h2 class="card-text">
+                                $<span th:text="${#numbers.formatDecimal(ventasHoy, 0, 'COMMA', 2, 'POINT')}">0</span>
+                            </h2>
+                            <p class="card-text text-success small"><i class="fas fa-arrow-up me-1"></i> En el día de hoy</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Ventas Mensuales</h5>
+                            <h2 class="card-text">
+                                $<span th:text="${#numbers.formatDecimal(ventasMensuales, 0, 'COMMA', 2, 'POINT')}">0</span>
+                            </h2>
+                            <p class="card-text text-success small"><i class="fas fa-arrow-up me-1"></i> Este mes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Ventas Anuales</h5>
+                            <h2 class="card-text">
+                                $<span th:text="${#numbers.formatDecimal(ventasAnuales, 0, 'COMMA', 2, 'POINT')}">0</span>
+                            </h2>
+                            <p class="card-text text-success small"><i class="fas fa-arrow-up me-1"></i> Este año</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom">
+                        <div class="card-body">
+                            <h5 class="card-title">Meta Mensual</h5>
+                            <div class="d-flex justify-content-between mb-2">
+                                <h3>
+                                    <span>$<span th:text="${#numbers.formatDecimal(metaMensual, 0, 'COMMA', 2, 'POINT')}">0</span></span>
+                                </h3>
+                                <span th:text="${porcentajeMeta} + '%'">0%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" 
+                                     th:style="'width: ' + ${porcentajeMeta} + '%'" 
+                                     th:attr="aria-valuenow=${porcentajeMeta}" 
+                                     aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Embudo de Ventas -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Resumen de Ventas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <div class="funnel-step">
+                                        <div class="funnel-number" th:text="${#lists.size(ventas)}">0</div>
+                                        <h6>Total Ventas</h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="funnel-step">
+                                        <div class="funnel-number" th:text="${ventasCompletadas}">0</div>
+                                        <h6>Completadas</h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="funnel-step">
+                                        <div class="funnel-number" th:text="${ventasPendientes}">0</div>
+                                        <h6>Pendientes</h6>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="funnel-step">
+                                        <div class="funnel-number" th:text="${ventasCanceladas}">0</div>
+                                        <h6>Canceladas</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- Ventas Recientes -->
+                    <div class="card card-custom mb-4">
+                        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Ventas Recientes</h5>
+                            <div class="d-flex">
+                                <form method="get" th:action="@{/ventas/buscar}" class="d-flex me-3">
+                                    <div class="input-group" style="width: 250px;">
+                                        <input type="text" class="form-control" name="numeroFactura" 
+                                               placeholder="Buscar por número de factura..." th:value="${criterio}">
+                                        <button class="btn btn-outline-secondary" type="submit">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                        Filtrar por estado
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" th:href="@{/ventas}">Todos</a></li>
+                                        <li><a class="dropdown-item" th:href="@{/ventas/estado/COMPLETADA}">Completadas</a></li>
+                                        <li><a class="dropdown-item" th:href="@{/ventas/estado/PENDIENTE}">Pendientes</a></li>
+                                        <li><a class="dropdown-item" th:href="@{/ventas/estado/CANCELADA}">Canceladas</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>N° Factura</th>
+                                            <th>Cliente</th>
+                                            <th>Fecha</th>
+                                            <th>Método Pago</th>
+                                            <th>Total</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="venta : ${ventas}" th:if="${#lists.isEmpty(ventas)}">
+                                            <td colspan="7" class="text-center text-muted py-4">
+                                                <i class="fas fa-shopping-cart fa-2x mb-2"></i><br>
+                                                No se encontraron ventas
+                                            </td>
+                                        </tr>
+                                        <tr th:each="venta : ${ventas}" th:unless="${#lists.isEmpty(ventas)}">
+                                            <td th:text="${venta.numeroFactura}">N/A</td>
+                                            <td>
+                                                <span th:if="${venta.cliente != null}" 
+                                                      th:text="${venta.cliente.nombre} + ' ' + ${venta.cliente.apellido}">Cliente</span>
+                                                <span th:unless="${venta.cliente != null}" class="text-muted">Cliente no disponible</span>
+                                            </td>
+                                            <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy')}">Fecha</td>
+                                            <td>
+                                                <span th:switch="${venta.metodoPago}">
+                                                    <span th:case="EFECTIVO" class="badge bg-success">Efectivo</span>
+                                                    <span th:case="TARJETA_CREDITO" class="badge bg-primary">Tarjeta</span>
+                                                    <span th:case="TRANSFERENCIA" class="badge bg-info">Transferencia</span>
+                                                    <span th:case="CHEQUE" class="badge bg-warning">Cheque</span>
+                                                    <span th:case="*" th:text="${venta.metodoPago}" class="badge bg-secondary"></span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                $<span th:text="${#numbers.formatDecimal(venta.total, 0, 'COMMA', 2, 'POINT')}">0</span>
+                                            </td>
+                                            <td>
+                                                <span th:switch="${venta.estado}">
+                                                    <span th:case="COMPLETADA" class="badge badge-completed">Completada</span>
+                                                    <span th:case="PENDIENTE" class="badge badge-pending">Pendiente</span>
+                                                    <span th:case="CANCELADA" class="badge badge-cancelled">Cancelada</span>
+                                                    <span th:case="*" th:text="${venta.estado}" class="badge bg-secondary"></span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a th:href="@{/ventas/{id}(id=${venta.idVenta})}" 
+                                                       class="btn btn-outline-primary" title="Ver detalles">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a th:href="@{/ventas/editar/{id}(id=${venta.idVenta})}" 
+                                                       class="btn btn-outline-secondary" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+
+                                                    <!-- Solo mostrar acciones de estado para ventas pendientes -->
+                                                    <th:block th:if="${venta.estado.name() == 'PENDIENTE'}">
+                                                        <form th:action="@{/ventas/completar/{id}(id=${venta.idVenta})}" 
+                                                              method="post" class="d-inline">
+                                                            <button type="submit" class="btn btn-outline-success ms-1" 
+                                                                    title="Completar venta">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        </form>
+                                                        <form th:action="@{/ventas/cancelar/{id}(id=${venta.idVenta})}" 
+                                                              method="post" class="d-inline">
+                                                            <button type="submit" class="btn btn-outline-danger ms-1" 
+                                                                    title="Cancelar venta" 
+                                                                    onclick="return confirm('¿Está seguro de cancelar esta venta?')">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </form>
+                                                    </th:block>
+
+                                                    <!-- Mostrar botón eliminar para ventas canceladas -->
+                                                    <th:block th:if="${venta.estado.name() == 'CANCELADA'}">
+                                                        <form th:action="@{/ventas/eliminar/{id}(id=${venta.idVenta})}" 
+                                                              method="post" class="d-inline">
+                                                            <button type="submit" class="btn btn-outline-danger ms-1" 
+                                                                    title="Eliminar venta" 
+                                                                    onclick="return confirm('¿Está seguro de eliminar esta venta? Esta acción no se puede deshacer.')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </th:block>
+
+                                                    <button class="btn btn-outline-info ms-1" title="Imprimir" 
+                                                            th:onclick="|imprimirFactura('${venta.numeroFactura}')|">
+                                                        <i class="fas fa-print"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Productos Más Vendidos -->
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Productos Más Vendidos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <div th:if="${#lists.isEmpty(productosMasVendidos)}" class="list-group-item text-center text-muted">
+                                    <i class="fas fa-box fa-2x mb-2"></i><br>
+                                    No hay datos de productos vendidos
+                                </div>
+                                <div th:each="producto : ${productosMasVendidos}" th:unless="${#lists.isEmpty(productosMasVendidos)}" 
+                                     class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <img th:if="${producto.imagen != null}" 
+                                             th:src="@{/images/productos/{imagen}(imagen=${producto.imagen})}" 
+                                             th:alt="${producto.nombre}" class="sale-item-img me-3">
+                                        <span th:text="${producto.nombre}">Producto</span>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill" 
+                                          th:text="${producto.cantidadVendida}">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts específicos para la página de ventas -->
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/ventasLista.js}"></script>
+</th:block>
+</body>
+</html>

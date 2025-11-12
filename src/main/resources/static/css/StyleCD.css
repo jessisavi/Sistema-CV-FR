@@ -1,0 +1,600 @@
+:root {
+    --card-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    --card-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+    --header-gradient: linear-gradient(135deg, var(--color-primary) 0%, #2c2c2c 100%);
+    --accent-gradient: linear-gradient(135deg, var(--color-accent) 0%, #b8860b 100%);
+    --accent-gradient-hover: linear-gradient(135deg, #b8860b 0%, var(--color-accent) 100%);
+    --premium-gradient: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    --regular-gradient: linear-gradient(135deg, #6c757d 0%, #8a939b 100%);
+}
+
+/* Layout específico para detalle de cliente */
+.cliente-detalle-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header de la página */
+.cliente-header {
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--color-secondary);
+    margin-bottom: 2rem;
+}
+
+.cliente-header h2 {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.cliente-header .text-muted {
+    font-size: 1.1rem;
+}
+
+/* Cards específicas de cliente */
+.card-cliente-perfil {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    background: white;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.card-cliente-perfil:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+.card-cliente-estadisticas {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    background: white;
+    margin-bottom: 1.5rem;
+}
+
+.card-cliente-actividad {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    background: white;
+    margin-bottom: 1.5rem;
+}
+
+.card-cliente-historial {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    background: white;
+    margin-bottom: 1.5rem;
+}
+
+/* Header de cards de cliente */
+.card-header-cliente {
+    background: var(--header-gradient);
+    color: white;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem 1.5rem;
+    border-bottom: none;
+}
+
+.card-header-cliente h5 {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Avatar del cliente */
+.cliente-avatar-lg {
+    width: 80px;
+    height: 80px;
+    background: var(--accent-gradient);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+    text-transform: uppercase;
+}
+
+.cliente-nombre {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+    text-align: center;
+}
+
+.cliente-codigo {
+    color: #6c757d;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Estados del cliente */
+.cliente-estado {
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.estado-activo {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: var(--color-success);
+}
+
+.estado-inactivo {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+}
+
+/* Items de información del cliente */
+.info-item-cliente {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-light);
+}
+
+.info-item-cliente:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.info-item-cliente .info-label {
+    font-weight: 600;
+    color: var(--color-primary);
+    min-width: 140px;
+    font-size: 0.9rem;
+}
+
+.info-item-cliente .info-value {
+    color: #495057;
+    flex: 1;
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+/* Badges específicos de cliente */
+.badge-cliente {
+    font-weight: 600;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.badge-premium {
+    background: var(--premium-gradient);
+    color: #000;
+}
+
+.badge-regular {
+    background: var(--regular-gradient);
+    color: white;
+}
+
+/* Botones específicos de cliente */
+.btn-cliente {
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-cliente:hover {
+    background: var(--accent-gradient-hover);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(203, 154, 40, 0.3);
+}
+
+.btn-cliente-outline {
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+    background: transparent;
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-cliente-outline:hover {
+    background-color: var(--color-accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(203, 154, 40, 0.3);
+}
+
+/* Grupo de botones de acción */
+.botones-accion {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Filtros de actividad */
+.btn-group-filtros {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.btn-cliente-filtro {
+    border: 1px solid var(--color-secondary);
+    color: var(--color-primary);
+    background: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cliente-filtro:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.btn-cliente-filtro.active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: white;
+}
+
+/* Selector de período */
+.selector-periodo {
+    border: 1px solid var(--color-secondary);
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.selector-periodo:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 0.2rem rgba(203, 154, 40, 0.25);
+}
+
+/* Estados vacíos (sin datos) */
+.estado-vacio {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.estado-vacio i {
+    opacity: 0.5;
+    margin-bottom: 1rem;
+    font-size: 3rem;
+}
+
+.estado-vacio h6 {
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.estado-vacio p {
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* Timeline de actividad */
+.timeline-cliente {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.timeline-item-cliente {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.timeline-dot-cliente {
+    position: absolute;
+    left: -2rem;
+    top: 0;
+    width: 32px;
+    height: 32px;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.timeline-date-cliente {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.timeline-item-cliente h6 {
+    margin-bottom: 0.5rem;
+    color: var(--color-primary);
+    font-size: 0.95rem;
+}
+
+.timeline-item-cliente p {
+    color: #495057;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Tabla de historial */
+.tabla-historial {
+    margin-top: 0.5rem;
+}
+
+.tabla-historial .table {
+    margin-bottom: 0;
+}
+
+.tabla-historial thead th {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.8rem;
+}
+
+.tabla-historial tbody td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-color: var(--color-light);
+    font-size: 0.875rem;
+}
+
+.tabla-historial tbody tr:hover {
+    background-color: rgba(203, 154, 40, 0.05);
+}
+
+/* Información de contacto */
+.info-contacto a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.info-contacto a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+/* Responsive específico para cliente detalle */
+@media (max-width: 1200px) {
+    .cliente-detalle-container {
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .card-header-cliente {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .card-header-cliente h5 {
+        font-size: 1.1rem;
+    }
+    
+    .botones-accion {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .info-item-cliente {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: left;
+    }
+    
+    .info-item-cliente .info-label {
+        min-width: auto;
+    }
+    
+    .info-item-cliente .info-value {
+        text-align: left;
+    }
+}
+
+@media (max-width: 768px) {
+    .cliente-detalle-container {
+        padding: 0 0.5rem;
+    }
+    
+    .cliente-avatar-lg {
+        width: 60px;
+        height: 60px;
+        font-size: 1.25rem;
+    }
+    
+    .cliente-nombre {
+        font-size: 1.25rem;
+    }
+    
+    .botones-accion {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .btn-cliente,
+    .btn-cliente-outline {
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .btn-group-filtros {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .tabla-historial {
+        font-size: 0.8rem;
+    }
+    
+    .tabla-historial thead th,
+    .tabla-historial tbody td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .cliente-header {
+        text-align: center;
+    }
+    
+    .cliente-header .botones-accion {
+        justify-content: center;
+    }
+    
+    .card-header-cliente {
+        text-align: center;
+        padding: 0.75rem 1rem;
+    }
+    
+    .timeline-cliente {
+        padding-left: 1.5rem;
+    }
+    
+    .timeline-dot-cliente {
+        left: -1.5rem;
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+    
+    .estado-vacio {
+        padding: 2rem 1rem;
+    }
+    
+    .estado-vacio i {
+        font-size: 2.5rem;
+    }
+}
+
+/* Estilos para impresión específicos de cliente */
+@media print {
+    .btn-cliente,
+    .btn-cliente-outline,
+    .botones-accion,
+    .btn-group-filtros,
+    .selector-periodo {
+        display: none !important;
+    }
+    
+    .card-cliente-perfil,
+    .card-cliente-estadisticas,
+    .card-cliente-actividad,
+    .card-cliente-historial {
+        box-shadow: none !important;
+        border: 1px solid var(--color-secondary) !important;
+        page-break-inside: avoid;
+    }
+    
+    .card-header-cliente {
+        background: var(--color-primary) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .tabla-historial thead th {
+        background: var(--color-primary) !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* Estados interactivos específicos */
+.item-historial:hover {
+    background-color: rgba(203, 154, 40, 0.08) !important;
+    transition: background-color 0.2s ease;
+}
+
+.valor-destacado {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Animaciones específicas */
+@keyframes highlight-cliente {
+    0% { background-color: rgba(203, 154, 40, 0.3); }
+    100% { background-color: transparent; }
+}
+
+.cambio-destacado {
+    animation: highlight-cliente 2s ease-in-out;
+}
+
+/* Utilidades específicas para cliente */
+.texto-codigo-cliente {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--color-primary);
+    background-color: var(--color-light);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.borde-accent-left {
+    border-left: 4px solid var(--color-accent);
+    padding-left: 1rem;
+}
+
+.sombra-accent-cliente {
+    box-shadow: 0 2px 8px rgba(203, 154, 40, 0.15);
+}
+
+/* Estados de carga */
+.cliente-cargando {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.cliente-cargando::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+}

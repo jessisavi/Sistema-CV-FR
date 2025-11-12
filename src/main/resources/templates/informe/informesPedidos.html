@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title>Informe de Pedidos | Sistema Comercial</title>
+
+        <!-- Estilos específicos para informes -->
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleINPE.css}">
+    </th:block>
+</head>
+
+<body>
+    <!-- Contenido principal -->
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <!-- Mensajes -->
+            <div th:if="${mensaje}" class="alert alert-dismissible fade show" 
+                 th:classappend="${tipoMensaje == 'success'} ? 'alert-success' : 'alert-danger'" 
+                 role="alert">
+                <span th:text="${mensaje}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0"><i class="fas fa-clipboard-list me-2"></i> Informe Detallado de Pedidos</h2>
+                <div>
+                    <a th:href="@{/informes}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-2"></i>Volver
+                    </a>
+                    <button class="btn btn-custom" onclick="exportarPedidos()">
+                        <i class="fas fa-file-export me-2"></i>Exportar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="date-range-picker">
+                        <h5 class="mb-3"><i class="fas fa-calendar-alt me-2"></i> Período Seleccionado</h5>
+                        <form method="get" th:action="@{/informes/pedidos}">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+                                    <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" 
+                                           th:value="${fechaInicio}">
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <label for="fechaFin" class="form-label">Fecha Fin</label>
+                                    <input type="date" class="form-control" id="fechaFin" name="fechaFin"
+                                           th:value="${fechaFin}">
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end mb-2">
+                                    <button type="submit" class="btn btn-custom w-100">
+                                        <i class="fas fa-filter me-2"></i>Actualizar
+                                    </button>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end mb-2">
+                                    <a th:href="@{/informes/pedidos}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-sync me-2"></i>Restablecer
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjetas de resumen -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-primary">Total Pedidos</h5>
+                                    <h3 class="text-primary" th:text="${totalPedidos}">0</h3>
+                                    <p class="card-text">Pedidos registrados</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-success">Valor Total</h5>
+                                    <h3 class="text-success">$<span th:text="${#numbers.formatDecimal(totalValor, 0, 'DEFAULT', 0, 'DEFAULT')}">0</span></h3>
+                                    <p class="card-text">Valor total pedidos</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-warning">Tasa Completación</h5>
+                                    <h3 class="text-warning" th:text="${tasaCompletacion} + '%'">0%</h3>
+                                    <p class="card-text">Pedidos completados</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title text-info">Promedio</h5>
+                                    <h3 class="text-info">$<span th:text="${#numbers.formatDecimal(promedioPedido, 0, 'DEFAULT', 0, 'DEFAULT')}">0</span></h3>
+                                    <p class="card-text">Por pedido</p>
+                                </div>
+                                <div class="report-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Estado de Pedidos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="ordersStatusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom">
+                            <h5 class="mb-0">Distribución por Cliente</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="clientDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Pedidos Detallados -->
+            <div class="card card-custom mb-4">
+                <div class="card-header card-header-custom">
+                    <h5 class="mb-0">Detalle de Pedidos</h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2" onclick="imprimirTabla()">
+                            <i class="fas fa-print me-1"></i>Imprimir
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="exportarTabla()">
+                            <i class="fas fa-download me-1"></i>Exportar
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tablaPedidos">
+                            <thead>
+                                <tr>
+                                    <th>N° Factura</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Vendedor</th>
+                                    <th>Productos</th>
+                                    <th>Unidades</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Notas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(pedidos)}">
+                                    <td colspan="9" class="text-center">No hay pedidos en el período seleccionado</td>
+                                </tr>
+                                <tr th:each="pedido : ${pedidos}">
+                                    <td th:text="${pedido.numeroPedido}">N/A</td>
+                                    <td th:text="${#dates.format(pedido.fecha, 'dd/MM/yyyy')}">N/A</td>
+                                    <td th:text="${pedido.cliente}">N/A</td>
+                                    <td th:text="${pedido.vendedor}">N/A</td>
+                                    <td th:text="${pedido.cantidadProductos}">0</td>
+                                    <td th:text="${pedido.totalUnidades}">0</td>
+                                    <td>$<span th:text="${#numbers.formatDecimal(pedido.total, 0, 'DEFAULT', 0, 'DEFAULT')}">0</span></td>
+                                    <td>
+                                        <span th:classappend="${pedido.estado == 'COMPLETADA'} ? 'badge bg-success' : 
+                                              ${pedido.estado == 'PENDIENTE'} ? 'badge bg-warning text-dark' : 
+                                              'badge bg-danger'"
+                                              th:text="${pedido.estado}">PENDIENTE</span>
+                                    </td>
+                                    <td>
+                                        <i th:if="${pedido.notas != null and !pedido.notas.empty}" 
+                                           class="fas fa-sticky-note text-muted" 
+                                           th:attr="title=${pedido.notas}"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts específicos para informes de pedidos -->
+<th:block layout:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/informesPedidos.js}"></script>
+</th:block>
+</body>
+</html>

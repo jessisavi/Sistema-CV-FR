@@ -1,16 +1,19 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary" th:fragment="navbar">
     <div class="container-fluid">
-        <!-- Logo/Brand -->
-        <a class="navbar-brand fw-bold" th:href="@{/dashboard}">
-            <i class="fas fa-store me-2"></i>
-            Sistema CV
+        <!-- Logo/Brand con imagen -->
+        <a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/dashboard}">
+            <img th:src="@{/images/StylishHome.png}" 
+                 alt="Sistema CV - StylishHome" 
+                 style="height: 40px; width: auto; margin-right: 10px;"
+                 onerror="this.style.display='none'">
+            <span>Sistema CV</span>
         </a>
-        
+
         <!-- Botón móvil -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
+
         <!-- Menú de navegación -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
@@ -21,7 +24,7 @@
                         Dashboard
                     </a>
                 </li>
-                
+
                 <!-- Clientes -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -30,19 +33,19 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{/clientes}">
-                            <i class="fas fa-list me-2"></i>Listar Clientes
-                        </a></li>
+                                <i class="fas fa-list me-2"></i>Listar Clientes
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/clientes/nuevo}">
-                            <i class="fas fa-plus me-2"></i>Nuevo Cliente
-                        </a></li>
-                        <li th:if="${session.empleado != null}">
+                                <i class="fas fa-plus me-2"></i>Nuevo Cliente
+                            </a></li>
+                        <li th:if="${session.usuario != null}">
                             <a class="dropdown-item" th:href="@{/clientes/mis-clientes}">
                                 <i class="fas fa-user-check me-2"></i>Mis Clientes
                             </a>
                         </li>
                     </ul>
                 </li>
-                
+
                 <!-- Productos -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -51,17 +54,17 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{/productos}">
-                            <i class="fas fa-list me-2"></i>Listar Productos
-                        </a></li>
+                                <i class="fas fa-list me-2"></i>Listar Productos
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/productos/nuevo}">
-                            <i class="fas fa-plus me-2"></i>Nuevo Producto
-                        </a></li>
+                                <i class="fas fa-plus me-2"></i>Nuevo Producto
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/categorias}">
-                            <i class="fas fa-tags me-2"></i>Categorías
-                        </a></li>
+                                <i class="fas fa-tags me-2"></i>Categorías
+                            </a></li>
                     </ul>
                 </li>
-                
+
                 <!-- Cotizaciones -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -70,14 +73,14 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{/cotizaciones}">
-                            <i class="fas fa-list me-2"></i>Listar Cotizaciones
-                        </a></li>
+                                <i class="fas fa-list me-2"></i>Listar Cotizaciones
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/cotizaciones/nueva}">
-                            <i class="fas fa-plus me-2"></i>Nueva Cotización
-                        </a></li>
+                                <i class="fas fa-plus me-2"></i>Nueva Cotización
+                            </a></li>
                     </ul>
                 </li>
-                
+
                 <!-- Ventas -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -86,14 +89,14 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{/ventas}">
-                            <i class="fas fa-list me-2"></i>Listar Ventas
-                        </a></li>
+                                <i class="fas fa-list me-2"></i>Listar Ventas
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/ventas/nueva}">
-                            <i class="fas fa-plus me-2"></i>Nueva Venta
-                        </a></li>
+                                <i class="fas fa-plus me-2"></i>Nueva Venta
+                            </a></li>
                     </ul>
                 </li>
-                
+
                 <!-- Informes -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -102,36 +105,36 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" th:href="@{/informes/ventas}">
-                            <i class="fas fa-chart-line me-2"></i>Ventas
-                        </a></li>
+                                <i class="fas fa-chart-line me-2"></i>Ventas
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/informes/cotizaciones}">
-                            <i class="fas fa-file-alt me-2"></i>Cotizaciones
-                        </a></li>
+                                <i class="fas fa-file-alt me-2"></i>Cotizaciones
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/informes/clientes}">
-                            <i class="fas fa-users me-2"></i>Clientes
-                        </a></li>
+                                <i class="fas fa-users me-2"></i>Clientes
+                            </a></li>
                     </ul>
                 </li>
             </ul>
-            
-            <!-- Menú del usuario -->
-            <ul class="navbar-nav" th:if="${session.empleado != null}">
+
+            <!-- Menú del usuario - CORREGIDO -->
+            <ul class="navbar-nav" th:if="${session.usuario != null}">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                         <i class="fas fa-user-circle me-1"></i>
-                        <span th:text="${session.empleado.usuario}">Usuario</span>
+                        <span th:text="${session.usuario.usuario}">Usuario</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" th:href="@{/perfil}">
-                            <i class="fas fa-user me-2"></i>Mi Perfil
-                        </a></li>
+                                <i class="fas fa-user me-2"></i>Mi Perfil
+                            </a></li>
                         <li><a class="dropdown-item" th:href="@{/cambiar-contrasena}">
-                            <i class="fas fa-key me-2"></i>Cambiar Contraseña
-                        </a></li>
+                                <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                            </a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">
-                            <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                        </a></li>
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </a></li>
                     </ul>
                 </li>
             </ul>

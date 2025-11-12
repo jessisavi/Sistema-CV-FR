@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      layout:decorate="~{base}">
+    <head>
+        <title>Detalle del Producto | Sistema CV</title>
+
+        <!-- Estilos específicos para detalle de producto -->
+        <th:block layout:fragment="styles">
+            <link rel="stylesheet" th:href="@{/css/StylePD.css}">
+        </th:block>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="container-fluid">
+                <!-- Header de la página -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-1"><i class="fas fa-box me-2"></i> Detalle del Producto</h2>
+                        <p class="text-muted mb-0">Información completa del producto seleccionado</p>
+                    </div>
+                    <div>
+                        <a th:href="@{/productos}" class="btn btn-outline-custom">
+                            <i class="fas fa-arrow-left me-2"></i> Volver a Productos
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mensajes de éxito y error -->
+                <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${mensaje}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Contenido principal del detalle -->
+                <th:block th:if="${producto != null}">
+                    <div class="card card-custom">
+                        <div class="card-header card-header-custom d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="mb-0">
+                                    <i class="fas fa-box me-2"></i>
+                                    <span th:text="${producto.nombre}">Nombre del Producto</span>
+                                </h4>
+                            </div>
+                            <div>
+                                <span class="badge bg-dark fs-6" th:text="${producto.codigo}">COD-001</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Imagen del producto -->
+                                <div class="col-md-4 text-center mb-4">
+                                    <img th:src="@{${producto.imagen != null ? '/images/productos/' + producto.imagen : '/images/productos/default.jpg'}}" 
+                                         th:alt="${producto.nombre}" 
+                                         class="img-fluid rounded product-detail-image"
+                                         onerror="this.src='/images/productos/default.jpg'">
+                                </div>
+
+                                <!-- Información del producto -->
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <!-- Información General -->
+                                        <div class="col-md-6">
+                                            <h5 class="text-primary mb-3">Información General</h5>
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td class="fw-bold" style="width: 40%;">Nombre:</td>
+                                                    <td th:text="${producto.nombre}">Nombre Producto</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Código:</td>
+                                                    <td>
+                                                        <span class="badge bg-secondary" th:text="${producto.codigo}">COD-001</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Descripción:</td>
+                                                    <td th:text="${producto.descripcion != null ? producto.descripcion : 'No disponible'}">
+                                                        Descripción del producto
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Color:</td>
+                                                    <td th:text="${producto.color != null ? producto.color : 'No especificado'}">
+                                                        Color
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Categoría:</td>
+                                                    <td>
+                                                        <span class="badge badge-category ceramica" 
+                                                              th:text="${producto.categoria?.nombre != null ? producto.categoria.nombre : 'Sin categoría'}">
+                                                            Categoría
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <!-- Especificaciones -->
+                                        <div class="col-md-6">
+                                            <h5 class="text-primary mb-3">Especificaciones</h5>
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td class="fw-bold" style="width: 40%;">Acabado:</td>
+                                                    <td th:text="${producto.acabado != null ? producto.acabado : 'No especificado'}">
+                                                        Acabado
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Rectificado:</td>
+                                                    <td>
+                                                        <span th:classappend="${producto.rectificado == '1'} ? 'badge bg-success' : 'badge bg-secondary'"
+                                                              th:text="${producto.rectificado == '1'} ? 'Sí' : 'No'">
+                                                            No
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Tráfico:</td>
+                                                    <td th:text="${producto.trafico != null ? producto.trafico : 'No especificado'}">
+                                                        Tráfico
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Proveedor:</td>
+                                                    <td th:text="${producto.proveedor?.nombre != null ? producto.proveedor.nombre : 'No asignado'}">
+                                                        Proveedor
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="fw-bold">Unidad Medida:</td>
+                                                    <td th:text="${producto.unidadMedida != null ? producto.unidadMedida : 'No especificada'}">
+                                                        M2
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Información de Inventario -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <h5 class="text-primary mb-3">Información de Inventario</h5>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="card bg-light inventory-card">
+                                                        <div class="card-body text-center">
+                                                            <h6 class="card-title text-muted">Precio</h6>
+                                                            <h3 class="text-success" th:text="'$' + ${#numbers.formatDecimal(producto.precio, 0, 'COMMA', 0, 'POINT')}">
+                                                                $0
+                                                            </h3>
+                                                            <small class="text-muted" th:text="${producto.unidadMedida != null ? 'por ' + producto.unidadMedida : 'por unidad'}">
+                                                                por M2
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="card bg-light inventory-card">
+                                                        <div class="card-body text-center">
+                                                            <h6 class="card-title text-muted">Stock Actual</h6>
+                                                            <h3 th:classappend="${producto.stock == 0} ? 'text-danger' : 
+                                                                  (${producto.stock <= 10} ? 'text-warning' : 'text-success')"
+                                                                th:text="${producto.stock}">
+                                                                0
+                                                            </h3>
+                                                            <small class="text-muted">unidades</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="card bg-light inventory-card">
+                                                        <div class="card-body text-center">
+                                                            <h6 class="card-title text-muted">Ubicación</h6>
+                                                            <h5 class="text-primary" th:text="${producto.ubicacion != null ? producto.ubicacion : 'No asignada'}">
+                                                                Ubicación
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Estado del Stock -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <h5 class="text-primary mb-3">Estado del Stock</h5>
+                                            <div class="d-flex justify-content-center">
+                                                <th:block th:switch="${producto.stock}">
+                                                    <span th:case="0" class="badge bg-danger fs-5 p-3">Sin Stock</span>
+                                                    <span th:case="*" th:if="${producto.stock <= 10}" class="badge bg-warning fs-5 p-3">Stock Bajo</span>
+                                                    <span th:case="*" th:if="${producto.stock > 10 and producto.stock <= 20}" class="badge bg-info fs-5 p-3">Stock Medio</span>
+                                                    <span th:case="*" th:if="${producto.stock > 20}" class="badge bg-success fs-5 p-3">Stock Óptimo</span>
+                                                </th:block>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Información del Sistema -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <h5 class="text-primary mb-3">Información del Sistema</h5>
+                                            <div class="d-flex justify-content-between text-muted system-info">
+                                                <div>
+                                                    <small>
+                                                        <strong>Fecha de Creación:</strong> 
+                                                        <span th:text="${producto.fechaCreacion != null} ? 
+                                                              ${#temporals.format(producto.fechaCreacion, 'dd/MM/yyyy HH:mm')} : 
+                                                              'No disponible'">
+                                                            Fecha creación
+                                                        </span>
+                                                    </small>
+                                                </div>
+                                                <div>
+                                                    <small>
+                                                        <strong>Última Actualización:</strong> 
+                                                        <span th:text="${producto.fechaActualizacion != null} ? 
+                                                              ${#temporals.format(producto.fechaActualizacion, 'dd/MM/yyyy HH:mm')} : 
+                                                              'No disponible'">
+                                                            Fecha actualización
+                                                        </span>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botones de acción -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-end gap-2 action-buttons">
+                                                <a th:href="@{/productos/editar/{id}(id=${producto.idProducto})}" 
+                                                   class="btn btn-custom">
+                                                    <i class="fas fa-edit me-2"></i>Editar Producto
+                                                </a>
+                                                <button type="button" class="btn btn-outline-danger" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#confirmarEliminacionModal">
+                                                    <i class="fas fa-trash me-2"></i>Eliminar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+
+                <!-- Mensaje cuando no hay producto -->
+                <th:block th:unless="${producto != null}">
+                    <div class="alert alert-warning text-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        No se pudo cargar la información del producto.
+                        <a th:href="@{/productos}" class="alert-link ms-2">
+                            Volver a la lista de productos
+                        </a>
+                    </div>
+                </th:block>
+            </div>
+
+            <!-- Modal de confirmación para eliminar producto -->
+            <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmarEliminacionModalLabel">
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                Confirmar Eliminación
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Está seguro de que desea eliminar el producto <strong th:text="${producto?.nombre}">Producto</strong>?</p>
+                            <p class="text-danger small">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Esta acción no se puede deshacer y eliminará permanentemente el producto del sistema.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <form th:action="@{/productos/eliminar/{id}(id=${producto?.idProducto})}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash me-2"></i>Eliminar Producto
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts específicos para detalle de producto -->
+        <th:block layout:fragment="scripts">
+            <script th:src="@{/js/productoDetalle.js}"></script>
+        </th:block>
+    </body>
+</html>

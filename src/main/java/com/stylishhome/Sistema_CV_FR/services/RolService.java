@@ -223,6 +223,16 @@ public class RolService {
     }
 
     /**
+     * Verifica si un rol tiene un permiso específico
+     * @param rolId ID del rol
+     * @param permiso Permiso a verificar
+     * @return true si tiene el permiso, false en caso contrario
+     */
+    public boolean verificarPermiso(Long rolId, String permiso) {
+        return rolRepository.tienePermiso(rolId, permiso);
+    }
+
+    /**
      * Obtiene estadísticas de uso de roles
      * @return Mapa con estadísticas de roles
      */
@@ -233,13 +243,12 @@ public class RolService {
         estadisticas.put("rolesActivos", contarRolesActivos());
         estadisticas.put("rolesInactivos", contarRolesInactivos());
         estadisticas.put("permisosUnicos", obtenerPermisosUnicos().size());
-        estadisticas.put("estadisticasUso", rolRepository.findEstadisticasUsoRoles());
         
         return estadisticas;
     }
 
     /**
-     * Inicializa los roles predefinidos del sistema
+     * Inicializa los roles predefinidos del sistema con los permisos correctos
      */
     @Transactional
     public void inicializarRolesPredefinidos() {
@@ -247,37 +256,32 @@ public class RolService {
         if (!rolRepository.existsByNombre(Rol.Nombres.ADMINISTRADOR)) {
             Rol admin = new Rol();
             admin.setNombre(Rol.Nombres.ADMINISTRADOR);
-            admin.setDescripcion("Rol con acceso completo al sistema");
+            admin.setDescripcion("Acceso a ventas, ventas detalle, productos, información de asesores, clientes, categorías, cotizaciones, proveedor, cotización detalle y informes");
             admin.setActivo(true);
             admin.setFechaCreacion(LocalDateTime.now());
             
-            // Permisos de administrador
-            admin.getPermisos().add("USUARIOS_LEER");
-            admin.getPermisos().add("USUARIOS_CREAR");
-            admin.getPermisos().add("USUARIOS_ACTUALIZAR");
-            admin.getPermisos().add("USUARIOS_ELIMINAR");
-            admin.getPermisos().add("ROLES_LEER");
-            admin.getPermisos().add("ROLES_CREAR");
-            admin.getPermisos().add("ROLES_ACTUALIZAR");
-            admin.getPermisos().add("ROLES_ELIMINAR");
-            admin.getPermisos().add("CLIENTES_LEER");
-            admin.getPermisos().add("CLIENTES_CREAR");
-            admin.getPermisos().add("CLIENTES_ACTUALIZAR");
-            admin.getPermisos().add("CLIENTES_ELIMINAR");
-            admin.getPermisos().add("PRODUCTOS_LEER");
-            admin.getPermisos().add("PRODUCTOS_CREAR");
-            admin.getPermisos().add("PRODUCTOS_ACTUALIZAR");
-            admin.getPermisos().add("PRODUCTOS_ELIMINAR");
-            admin.getPermisos().add("VENTAS_LEER");
-            admin.getPermisos().add("VENTAS_CREAR");
-            admin.getPermisos().add("VENTAS_ACTUALIZAR");
-            admin.getPermisos().add("VENTAS_ELIMINAR");
-            admin.getPermisos().add("COTIZACIONES_LEER");
-            admin.getPermisos().add("COTIZACIONES_CREAR");
-            admin.getPermisos().add("COTIZACIONES_ACTUALIZAR");
-            admin.getPermisos().add("COTIZACIONES_ELIMINAR");
-            admin.getPermisos().add("INFORMES_LEER");
-            admin.getPermisos().add("INFORMES_GENERAR");
+            // Permisos de administrador basados en tu estructura
+            admin.getPermisos().add(Rol.Permisos.VENTAS_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.VENTAS_DETALLE_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.PRODUCTOS_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.PRODUCTOS_CREAR);
+            admin.getPermisos().add(Rol.Permisos.PRODUCTOS_EDITAR);
+            admin.getPermisos().add(Rol.Permisos.CLIENTES_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.CLIENTES_CREAR);
+            admin.getPermisos().add(Rol.Permisos.CLIENTES_EDITAR);
+            admin.getPermisos().add(Rol.Permisos.CATEGORIAS_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.CATEGORIAS_CREAR);
+            admin.getPermisos().add(Rol.Permisos.CATEGORIAS_EDITAR);
+            admin.getPermisos().add(Rol.Permisos.COTIZACIONES_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.COTIZACIONES_CREAR);
+            admin.getPermisos().add(Rol.Permisos.COTIZACIONES_EDITAR);
+            admin.getPermisos().add(Rol.Permisos.PROVEEDORES_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.PROVEEDORES_CREAR);
+            admin.getPermisos().add(Rol.Permisos.PROVEEDORES_EDITAR);
+            admin.getPermisos().add(Rol.Permisos.COTIZACION_DETALLE_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.INFORMES_ACCESO);
+            admin.getPermisos().add(Rol.Permisos.INFORMES_GENERAR);
+            admin.getPermisos().add(Rol.Permisos.PORTALEMPLEADOS_ACCESO);
             
             rolRepository.save(admin);
         }
@@ -286,25 +290,53 @@ public class RolService {
         if (!rolRepository.existsByNombre(Rol.Nombres.GERENTE)) {
             Rol gerente = new Rol();
             gerente.setNombre(Rol.Nombres.GERENTE);
-            gerente.setDescripcion("Rol con acceso a gestión y reportes");
+            gerente.setDescripcion("Acceso completo a todo el sistema");
             gerente.setActivo(true);
             gerente.setFechaCreacion(LocalDateTime.now());
             
-            // Permisos de gerente
-            gerente.getPermisos().add("CLIENTES_LEER");
-            gerente.getPermisos().add("CLIENTES_CREAR");
-            gerente.getPermisos().add("CLIENTES_ACTUALIZAR");
-            gerente.getPermisos().add("PRODUCTOS_LEER");
-            gerente.getPermisos().add("PRODUCTOS_CREAR");
-            gerente.getPermisos().add("PRODUCTOS_ACTUALIZAR");
-            gerente.getPermisos().add("VENTAS_LEER");
-            gerente.getPermisos().add("VENTAS_CREAR");
-            gerente.getPermisos().add("VENTAS_ACTUALIZAR");
-            gerente.getPermisos().add("COTIZACIONES_LEER");
-            gerente.getPermisos().add("COTIZACIONES_CREAR");
-            gerente.getPermisos().add("COTIZACIONES_ACTUALIZAR");
-            gerente.getPermisos().add("INFORMES_LEER");
-            gerente.getPermisos().add("INFORMES_GENERAR");
+            // Permisos completos del gerente
+            gerente.getPermisos().addAll(List.of(
+                Rol.Permisos.VENTAS_ACCESO,
+                Rol.Permisos.VENTAS_CREAR,
+                Rol.Permisos.VENTAS_EDITAR,
+                Rol.Permisos.VENTAS_ELIMINAR,
+                Rol.Permisos.VENTAS_DETALLE_ACCESO,
+                Rol.Permisos.PRODUCTOS_ACCESO,
+                Rol.Permisos.PRODUCTOS_CREAR,
+                Rol.Permisos.PRODUCTOS_EDITAR,
+                Rol.Permisos.PRODUCTOS_ELIMINAR,
+                Rol.Permisos.CLIENTES_ACCESO,
+                Rol.Permisos.CLIENTES_CREAR,
+                Rol.Permisos.CLIENTES_EDITAR,
+                Rol.Permisos.CLIENTES_ELIMINAR,
+                Rol.Permisos.CATEGORIAS_ACCESO,
+                Rol.Permisos.CATEGORIAS_CREAR,
+                Rol.Permisos.CATEGORIAS_EDITAR,
+                Rol.Permisos.CATEGORIAS_ELIMINAR,
+                Rol.Permisos.COTIZACIONES_ACCESO,
+                Rol.Permisos.COTIZACIONES_CREAR,
+                Rol.Permisos.COTIZACIONES_EDITAR,
+                Rol.Permisos.COTIZACIONES_ELIMINAR,
+                Rol.Permisos.COTIZACION_DETALLE_ACCESO,
+                Rol.Permisos.COTIZACION_DETALLE_EDITAR,
+                Rol.Permisos.PROVEEDORES_ACCESO,
+                Rol.Permisos.PROVEEDORES_CREAR,
+                Rol.Permisos.PROVEEDORES_EDITAR,
+                Rol.Permisos.PROVEEDORES_ELIMINAR,
+                Rol.Permisos.INFORMES_ACCESO,
+                Rol.Permisos.INFORMES_GENERAR,
+                Rol.Permisos.INFORMES_EXPORTAR,
+                Rol.Permisos.PORTALEMPLEADOS_ACCESO,
+                Rol.Permisos.PORTALEMPLEADOS_CREAR,
+                Rol.Permisos.PORTALEMPLEADOS_EDITAR,
+                Rol.Permisos.PORTALEMPLEADOS_ELIMINAR,
+                Rol.Permisos.ROLES_ACCESO,
+                Rol.Permisos.ROLES_CREAR,
+                Rol.Permisos.ROLES_EDITAR,
+                Rol.Permisos.ROLES_ELIMINAR,
+                Rol.Permisos.ROL_PERMISOS_ACCESO,
+                Rol.Permisos.ROL_PERMISOS_EDITAR
+            ));
             
             rolRepository.save(gerente);
         }
@@ -313,18 +345,26 @@ public class RolService {
         if (!rolRepository.existsByNombre(Rol.Nombres.ASESOR)) {
             Rol asesor = new Rol();
             asesor.setNombre(Rol.Nombres.ASESOR);
-            asesor.setDescripcion("Rol para asesores de ventas");
+            asesor.setDescripcion("Acceso a ventas, ventas detalle, productos, clientes, categorías, cotizaciones, cotizaciones detalle, informes");
             asesor.setActivo(true);
             asesor.setFechaCreacion(LocalDateTime.now());
             
             // Permisos de asesor
-            asesor.getPermisos().add("CLIENTES_LEER");
-            asesor.getPermisos().add("CLIENTES_CREAR");
-            asesor.getPermisos().add("PRODUCTOS_LEER");
-            asesor.getPermisos().add("VENTAS_LEER");
-            asesor.getPermisos().add("VENTAS_CREAR");
-            asesor.getPermisos().add("COTIZACIONES_LEER");
-            asesor.getPermisos().add("COTIZACIONES_CREAR");
+            asesor.getPermisos().add(Rol.Permisos.VENTAS_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.VENTAS_CREAR);
+            asesor.getPermisos().add(Rol.Permisos.VENTAS_DETALLE_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.PRODUCTOS_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.CLIENTES_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.CLIENTES_CREAR);
+            asesor.getPermisos().add(Rol.Permisos.CLIENTES_EDITAR);
+            asesor.getPermisos().add(Rol.Permisos.CATEGORIAS_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.COTIZACIONES_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.COTIZACIONES_CREAR);
+            asesor.getPermisos().add(Rol.Permisos.COTIZACIONES_EDITAR);
+            asesor.getPermisos().add(Rol.Permisos.COTIZACION_DETALLE_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.COTIZACION_DETALLE_EDITAR);
+            asesor.getPermisos().add(Rol.Permisos.INFORMES_ACCESO);
+            asesor.getPermisos().add(Rol.Permisos.INFORMES_GENERAR);
             
             rolRepository.save(asesor);
         }

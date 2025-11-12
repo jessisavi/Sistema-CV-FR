@@ -1,8 +1,6 @@
 package com.stylishhome.Sistema_CV_FR.controller;
 
 import com.stylishhome.Sistema_CV_FR.model.Venta;
-import com.stylishhome.Sistema_CV_FR.model.VentaDetalle;
-import com.stylishhome.Sistema_CV_FR.model.Producto;
 import com.stylishhome.Sistema_CV_FR.model.Usuario;
 import com.stylishhome.Sistema_CV_FR.service.VentaService;
 import com.stylishhome.Sistema_CV_FR.service.ProductoService;
@@ -72,7 +70,7 @@ public class VentaController {
     }
     
     /**
-     * Procesa el guardado de una nueva venta
+     * Procesa el guardado de una nueva venta 
      */
     @PostMapping("/guardar")
     public String guardarVenta(@ModelAttribute Venta venta,
@@ -86,6 +84,13 @@ public class VentaController {
             // Establecer el empleado/vendedor desde la sesión
             Usuario usuario = (Usuario) session.getAttribute("usuario");
             venta.setEmpleado(usuario);
+            
+            // Validar que el cliente esté seleccionado
+            if (venta.getCliente() == null || venta.getCliente().getIdCliente() == null) {
+                redirectAttributes.addFlashAttribute("error", "Debe seleccionar un cliente");
+                redirectAttributes.addFlashAttribute("venta", venta);
+                return "redirect:/ventas/nueva";
+            }
             
             ventaService.crearVenta(venta);
             redirectAttributes.addFlashAttribute("success", "Venta creada exitosamente");
@@ -144,7 +149,7 @@ public class VentaController {
     }
     
     /**
-     * Procesa la actualización de una venta existente
+     * Procesa la actualización de una venta existente 
      */
     @PostMapping("/actualizar/{id}")
     public String actualizarVenta(@PathVariable Integer id,
@@ -157,6 +162,13 @@ public class VentaController {
         
         try {
             venta.setIdVenta(id);
+            
+            // Validar que el cliente esté seleccionado
+            if (venta.getCliente() == null || venta.getCliente().getIdCliente() == null) {
+                redirectAttributes.addFlashAttribute("error", "Debe seleccionar un cliente");
+                return "redirect:/ventas/editar/" + id;
+            }
+            
             ventaService.actualizarVenta(id, venta);
             redirectAttributes.addFlashAttribute("success", "Venta actualizada exitosamente");
         } catch (Exception e) {

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+    <head>
+        <title>Detalle de Cliente | Sistema CV</title>
+
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/StyleCD.css}">
+    </th:block>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="container-fluid">
+            <!-- Mensajes flash -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1"><i class="fas fa-user me-2"></i> Detalle de Cliente</h2>
+                    <p class="text-muted mb-0">Información completa del cliente seleccionado</p>
+                </div>
+                <div class="botones-accion">
+                    <a th:href="@{/clientes}" class="btn btn-cliente-outline me-2">
+                        <i class="fas fa-arrow-left me-2"></i> Volver a Clientes
+                    </a>
+                    <a th:href="@{/clientes/editar/{id}(id=${cliente.idCliente})}" class="btn btn-cliente me-2">
+                        <i class="fas fa-edit me-2"></i> Editar
+                    </a>
+                    <button class="btn btn-cliente-outline" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+
+            <div th:if="${cliente}" class="cliente-detalle-container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <!-- Tarjeta de perfil del cliente -->
+                        <div class="card card-cliente-perfil">
+                            <div class="card-body text-center">
+                                <div class="cliente-avatar-lg" th:text="${cliente.nombre.substring(0,1) + cliente.apellido.substring(0,1)}">
+                                    NC
+                                </div>
+                                <h3 class="cliente-nombre" th:text="${cliente.nombre + ' ' + cliente.apellido}">
+                                    Nombre Cliente
+                                </h3>
+                                <div class="cliente-codigo" th:text="'ID: ' + ${cliente.codigo}">
+                                    ID: Código
+                                </div>
+                                <span class="cliente-estado" 
+                                      th:classappend="${cliente.estado == 'Activo'} ? 'estado-activo' : 'estado-inactivo'">
+                                    <i class="fas fa-circle me-1"></i>
+                                    <span th:text="${cliente.estado}">Estado</span>
+                                </span>
+                                <div class="mt-3">
+                                    <a th:href="@{/clientes/editar/{id}(id=${cliente.idCliente})}" 
+                                       class="btn btn-cliente me-2">
+                                        <i class="fas fa-edit me-1"></i>Editar
+                                    </a>
+                                    <a th:if="${cliente.email}" 
+                                       th:href="'mailto:' + ${cliente.email}" 
+                                       class="btn btn-cliente-outline">
+                                        <i class="fas fa-envelope me-1"></i>Contactar
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="px-4 pb-4">
+                                <h5 class="mb-3"><i class="fas fa-info-circle me-2"></i>Información del Cliente</h5>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Tipo de Cliente</div>
+                                    <div class="info-value">
+                                        <span th:if="${cliente.tipoCliente == 'Premium'}" 
+                                              class="badge-cliente badge-premium">
+                                            <i class="fas fa-crown me-1"></i>
+                                            <span th:text="${cliente.tipoCliente}">Premium</span>
+                                        </span>
+                                        <span th:if="${cliente.tipoCliente == 'Regular'}" 
+                                              class="badge-cliente badge-regular">
+                                            <span th:text="${cliente.tipoCliente}">Regular</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Correo Electrónico</div>
+                                    <div class="info-value">
+                                        <div th:if="${cliente.email}">
+                                            <i class="fas fa-envelope me-1 text-muted"></i>
+                                            <a th:href="'mailto:' + ${cliente.email}" th:text="${cliente.email}">
+                                                email@ejemplo.com
+                                            </a>
+                                        </div>
+                                        <span th:unless="${cliente.email}" class="text-muted">No especificado</span>
+                                    </div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Teléfono/Celular</div>
+                                    <div class="info-value">
+                                        <div th:if="${cliente.celular}">
+                                            <i class="fas fa-phone me-1 text-muted"></i>
+                                            <a th:href="'tel:' + ${cliente.celular}" th:text="${cliente.celular}">
+                                                Teléfono
+                                            </a>
+                                        </div>
+                                        <span th:unless="${cliente.celular}" class="text-muted">No especificado</span>
+                                    </div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Documento de Identidad</div>
+                                    <div class="info-value">
+                                        <div th:if="${cliente.tipoDocumento && cliente.numeroDocumento}">
+                                            <span th:text="${cliente.tipoDocumento + ' ' + cliente.numeroDocumento}">
+                                                Tipo Número
+                                            </span>
+                                        </div>
+                                        <span th:unless="${cliente.tipoDocumento && cliente.numeroDocumento}" 
+                                              class="text-muted">No especificado</span>
+                                    </div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Fecha de Registro</div>
+                                    <div class="info-value">
+                                        <i class="fas fa-calendar me-1 text-muted"></i>
+                                        <span th:text="${#temporals.format(cliente.fechaRegistro, 'dd/MM/yyyy')}">
+                                            Fecha
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Dirección</div>
+                                    <div class="info-value">
+                                        <div th:if="${cliente.direccion}">
+                                            <i class="fas fa-map-marker-alt me-1 text-muted"></i>
+                                            <span th:text="${cliente.direccion}">Dirección</span>
+                                            <br th:if="${cliente.ciudad}">
+                                            <small th:if="${cliente.ciudad}" class="text-muted" th:text="${cliente.ciudad}">
+                                                Ciudad
+                                            </small>
+                                        </div>
+                                        <span th:unless="${cliente.direccion}" class="text-muted">No especificada</span>
+                                    </div>
+                                </div>
+
+                                <div th:if="${cliente.empleadoAsignado}" class="info-item-cliente">
+                                    <div class="info-label">Empleado Asignado</div>
+                                    <div class="info-value">
+                                        <i class="fas fa-user-tie me-1 text-muted"></i>
+                                        <span th:text="${cliente.empleadoAsignado.usuario}">Empleado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta de estadísticas -->
+                        <div class="card card-cliente-estadisticas mt-4">
+                            <div class="card-header card-header-cliente">
+                                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Estadísticas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Total Compras</div>
+                                    <div class="info-value text-success">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        $0
+                                    </div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Pedidos Realizados</div>
+                                    <div class="info-value">0</div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Última Actividad</div>
+                                    <div class="info-value">
+                                        <span th:if="${cliente.fechaRegistro}" 
+                                              th:text="${#temporals.format(cliente.fechaRegistro, 'dd/MM/yyyy')}">
+                                            Fecha
+                                        </span>
+                                        <span th:unless="${cliente.fechaRegistro}" class="text-muted">Sin actividad</span>
+                                    </div>
+                                </div>
+
+                                <div class="info-item-cliente">
+                                    <div class="info-label">Estado</div>
+                                    <div class="info-value">
+                                        <span th:classappend="${cliente.estado == 'Activo'} ? 'badge bg-success' : 'badge bg-secondary'">
+                                            <i th:classappend="${cliente.estado == 'Activo'} ? 'fas fa-check-circle' : 'fas fa-times-circle'" 
+                                               class="me-1"></i>
+                                            <span th:text="${cliente.estado}">Estado</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <!-- Actividad reciente -->
+                        <div class="card card-cliente-actividad">
+                            <div class="card-header card-header-cliente d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Actividad Reciente</h5>
+                                <div class="btn-group btn-group-filtros">
+                                    <button class="btn btn-sm btn-cliente-filtro active" data-filtro="todos">Todos</button>
+                                    <button class="btn btn-sm btn-cliente-filtro" data-filtro="compras">Compras</button>
+                                    <button class="btn btn-sm btn-cliente-filtro" data-filtro="cotizaciones">Cotizaciones</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No hay actividad reciente</h6>
+                                    <p class="text-muted">Este cliente no tiene registros de actividad.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Historial de compras -->
+                        <div class="card card-cliente-historial mt-4">
+                            <div class="card-header card-header-cliente d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Historial</h5>
+                                <div>
+                                    <select class="form-select form-select-sm selector-periodo" style="width: 150px;">
+                                        <option>Últimos 3 meses</option>
+                                        <option>Últimos 6 meses</option>
+                                        <option>Este año</option>
+                                        <option>Todos</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+                                    <h6 class="text-muted">No hay historial disponible</h6>
+                                    <p class="text-muted">Este cliente no tiene registros de compras.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:unless="${cliente}" class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                No se pudo cargar la información del cliente.
+                <a th:href="@{/clientes}" class="alert-link ms-2">
+                    Volver a la lista de clientes
+                </a>
+            </div>
+        </div>
+    </div>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/clienteDetalle.js}"></script>
+</th:block>
+</body>
+</html>

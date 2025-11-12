@@ -14,28 +14,28 @@ import java.util.List;
  */
 @Repository
 public interface InformeLogRepository extends JpaRepository<InformeLog, Integer> {
-    
+
     /**
      * Busca logs por tipo de informe
      */
     List<InformeLog> findByTipoInforme(String tipoInforme);
-    
+
     /**
-     * Busca logs por empleado 
+     * Busca logs por empleado
      */
     List<InformeLog> findByEmpleado_IdEmpleado(Integer empleadoId);
-    
+
     /**
      * Busca logs por rango de fechas de generación
      */
     List<InformeLog> findByFechaGeneracionBetween(LocalDate fechaInicio, LocalDate fechaFin);
-    
+
     /**
      * Obtiene los tipos de informe más utilizados
      */
     @Query("SELECT il.tipoInforme, COUNT(il) FROM InformeLog il GROUP BY il.tipoInforme ORDER BY COUNT(il) DESC")
     List<Object[]> findTiposInformeMasUtilizados();
-    
+
     /**
      * Obtiene estadísticas de generación de informes por empleado
      */
@@ -43,7 +43,8 @@ public interface InformeLogRepository extends JpaRepository<InformeLog, Integer>
     List<Object[]> findEstadisticasPorEmpleado();
 
     /**
-     * Obtiene todos los logs de informes ordenados por fecha de generación descendente
+     * Obtiene todos los logs de informes ordenados por fecha de generación
+     * descendente
      */
     List<InformeLog> findAllByOrderByFechaGeneracionDesc();
 
@@ -72,6 +73,13 @@ public interface InformeLogRepository extends JpaRepository<InformeLog, Integer>
      * Busca logs por rango de fechas de informe
      */
     @Query("SELECT il FROM InformeLog il WHERE il.fechaInicio BETWEEN :fechaInicio AND :fechaFin OR il.fechaFin BETWEEN :fechaInicio AND :fechaFin")
-    List<InformeLog> findByRangoFechasInforme(@Param("fechaInicio") LocalDate fechaInicio, 
-                                            @Param("fechaFin") LocalDate fechaFin);
+    List<InformeLog> findByRangoFechasInforme(@Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin);
+
+    /**
+     * Busca logs por rango de fechas de generación (alternativa)
+     */
+    @Query("SELECT il FROM InformeLog il WHERE DATE(il.fechaGeneracion) BETWEEN :fechaInicio AND :fechaFin")
+    List<InformeLog> findByFechaGeneracionBetweenDates(@Param("fechaInicio") LocalDate fechaInicio,
+            @Param("fechaFin") LocalDate fechaFin);
 }

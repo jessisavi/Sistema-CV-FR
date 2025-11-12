@@ -4,7 +4,6 @@ import com.stylishhome.Sistema_CV_FR.model.Usuario;
 import com.stylishhome.Sistema_CV_FR.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -18,17 +17,19 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
     
     /**
-     * Autentica un usuario con nombre de usuario y contraseña
-     * @param usuario Nombre de usuario
-     * @param contraseña Contraseña
-     * @return Usuario autenticado o empty si las credenciales son inválidas
+     * Busca un usuario por nombre de usuario para Spring Security
+     *
+     * @param username Nombre de usuario
+     * @return Usuario encontrado o null si no existe
      */
-    public Optional<Usuario> autenticarUsuario(String usuario, String contraseña) {
-        return usuarioRepository.findByUsuarioAndContraseña(usuario, contraseña);
+    public Usuario findByUsername(String username) {
+        return usuarioRepository.findByUsuario(username)
+                .orElse(null);
     }
     
     /**
      * Obtiene todos los usuarios activos
+     *
      * @return Lista de usuarios activos
      */
     public List<Usuario> obtenerTodosLosUsuarios() {
@@ -37,6 +38,7 @@ public class UsuarioService {
     
     /**
      * Busca un usuario por su ID
+     *
      * @param id ID del usuario
      * @return Usuario encontrado o empty si no existe
      */
@@ -46,6 +48,7 @@ public class UsuarioService {
     
     /**
      * Guarda un usuario (crear o actualizar)
+     *
      * @param usuario Usuario a guardar
      * @return Usuario guardado
      */
@@ -55,6 +58,7 @@ public class UsuarioService {
     
     /**
      * Elimina un usuario por su ID
+     *
      * @param id ID del usuario a eliminar
      */
     public void eliminarUsuario(Integer id) {
@@ -63,10 +67,28 @@ public class UsuarioService {
     
     /**
      * Verifica si existe un usuario con el nombre de usuario especificado
+     *
      * @param usuario Nombre de usuario
      * @return true si existe, false en caso contrario
      */
     public boolean existeUsuario(String usuario) {
         return usuarioRepository.existsByUsuario(usuario);
+    }
+    
+    /**
+     * Autentica un usuario con nombre de usuario y contraseña
+     */
+    public Optional<Usuario> autenticarUsuario(String usuario, String contraseña) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByUsuario(usuario);
+        
+        if (usuarioOpt.isPresent()) {
+            Usuario usuarioEncontrado = usuarioOpt.get();
+            // Comparación directa (sin encriptación para compatibilidad con tu BD existente)
+            if (usuarioEncontrado.getContraseña().equals(contraseña)) {
+                return usuarioOpt;
+            }
+        }
+        
+        return Optional.empty();
     }
 }

@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class HomeController {
-    
+
     /**
      * Redirige a la página de login
      */
     @GetMapping("/")
     public String home() {
-        return "redirect:/login";
+        return "redirect:/login"; 
     }
-    
+
     /**
      * Muestra página de error personalizada
      */
@@ -24,7 +24,7 @@ public class HomeController {
     public String error() {
         return "error";
     }
-    
+
     /**
      * Muestra página de acceso denegado
      */
